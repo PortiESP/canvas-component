@@ -14,9 +14,10 @@ export default function Canvas() {
     const handleMouseMove = (e) => {
         // Calculate the mouse coordinates relative to the canvas
         const rect = window.cvs.canvasBoundingBox
-        // Store the mouse coordinates in the global variables
-        window.cvs.x = e.clientX - rect.left
-        window.cvs.y = e.clientY - rect.top
+        // Store the mouse coordinates in the global variables, considering the canvas position and the canvas drag offset
+        window.cvs.x = e.clientX - rect.left - window.cvs.canvasDragOffset.x
+        window.cvs.y = e.clientY - rect.top - window.cvs.canvasDragOffset.y
+
         if (window.cvs.mouseMoveCallback) window.cvs.mouseMoveCallback(e, {x: window.cvs.x, y: window.cvs.y})
     }
 

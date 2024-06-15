@@ -76,12 +76,15 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Drawing context
         ctx: ctx,
         $canvas: $canvas,
+
+        // Drag and offsets
+        canvasDragOffset: { x: 0, y: 0 } // Canvas drag offset
     }
 
     // METHODS
     // Clear the canvas
     window.cvs.clear = () => {
-        window.ctx.clearRect(0, 0, $canvas.width, $canvas.height)
+        window.ctx.clearRect(0 - window.cvs.canvasDragOffset.x, 0 - window.cvs.canvasDragOffset.y, $canvas.width, $canvas.height)
     }
 
     // Print debug info
@@ -90,19 +93,24 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         window.ctx.font = '12px Arial'
         window.ctx.textAlign = 'right'
 
+        // Canvas drag offset
+        const dx = window.cvs.canvasDragOffset.x
+        const dy = window.cvs.canvasDragOffset.y
+
         // Debug info
         data = [
-            window.cvs.x + ' - ' + window.cvs.y,
+            `(${window.cvs.x})  - (${window.cvs.y})`,
             "Mouse down: " + window.cvs.mouseDown,
             "Key: " + window.cvs.key,
             "Keys down: " + Object.keys(window.cvs.keysDown).filter(k => window.cvs.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
+            "Canvas drag offset: (" + window.cvs.canvasDragOffset.x + ") - (" + window.cvs.canvasDragOffset.y + ")",
             ...data
         ]
 
         // Custom data
         for (let i = 0; i < data.length; i++) {
-            ctx.fillText(data[i], window.cvs.$canvas.width - 10, 20 + i * 14)
+            ctx.fillText(data[i], window.cvs.$canvas.width - 10 - dx, 20 + i * 14 - dy)
         }
 
         // Reset the style
