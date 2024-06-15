@@ -13,7 +13,7 @@ export default function Canvas() {
 
     const handleMouseMove = (e) => {
         // Calculate the mouse coordinates relative to the canvas
-        const rect = window.cvs.$canvas.getBoundingClientRect()
+        const rect = window.cvs.canvasBoundingBox
         // Store the mouse coordinates in the global variables
         window.cvs.x = e.clientX - rect.left
         window.cvs.y = e.clientY - rect.top
@@ -77,6 +77,9 @@ export default function Canvas() {
             const parent = $canvas.parentElement.getBoundingClientRect()
             $canvas.width = parent.width
             $canvas.height = parent.height
+
+            // Update the canvas bounding box
+            window.cvs.canvasBoundingBox = $canvas.getBoundingClientRect()
         }
         if (window.cvs.resizeCallback) window.cvs.resizeCallback(e)
     }

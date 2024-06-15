@@ -52,6 +52,9 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         x: 0,
         y: 0,
 
+        // Canvas coordinates
+        canvasBoundingBox: $canvas.getBoundingClientRect(),
+
         // Mouse state
         mouseMoveCallback: null,
         mouseDown: null, // Button code of the pressed mouse button, if any (null otherwise)
@@ -73,8 +76,6 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Drawing context
         ctx: ctx,
         $canvas: $canvas,
-        width: $canvas.width,
-        height: $canvas.height,
     }
 
     // METHODS
@@ -101,7 +102,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
 
         // Custom data
         for (let i = 0; i < data.length; i++) {
-            ctx.fillText(data[i], window.cvs.width - 10, 20 + i * 14)
+            ctx.fillText(data[i], window.cvs.$canvas.width - 10, 20 + i * 14)
         }
 
         // Reset the style
