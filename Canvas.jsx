@@ -3,26 +3,37 @@ import constants from "../graph-manager/utils/constants"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
- *      - The callback functions receive the event related to the action and the mouse coordinates at the moment of the action. `callback(event, {x, y})`
+ *      
+ * - Every callback functions receive the event related to the action and the mouse coordinates at the moment of the action. `callback(event, {x, y})`
  * 
- * [i] See the `globals.js` file for more information about the available global variables.
+ * Most of the events will run a default action, like preventing the default behavior of the event, and then call the callback function if it is defined. 
+ * The callbacks are defined in the global variables and can be changed at any time. This callback functions as supposed to be defined in `setupCanvas` function as explained in README basic example.
  * 
+ * @See the `globals.js` file for more information about the available global variables.
  * @returns The canvas element using JSX
  */
 export default function Canvas() {
+
+    // ================================ Event Handlers ================================
+
+    // --- Mouse Events ---
 
     const handleMouseMove = (e) => {
         // Calculate the mouse coordinates relative to the canvas
         const rect = window.cvs.canvasBoundingBox
         // Store the mouse coordinates in the global variables, considering the canvas position and the canvas drag offset
 
+        // Position of the mouse relative to the canvas
+        const pointerX = (e.clientX - rect.left)
+        const pointerY = (e.clientY - rect.top)
+        // Compensate the canvas drag
         const dragOffsetX = window.graph.canvasDragOffset.x
         const dragOffsetY = window.graph.canvasDragOffset.y
+        // Adjust the pointer coordinates based on the zoom level and the canvas drag
+        window.cvs.x = pointerX/window.graph.zoom - dragOffsetX
+        window.cvs.y = pointerY/window.graph.zoom - dragOffsetY
 
-        window.cvs.x = (e.clientX - rect.left)/window.graph.zoom - dragOffsetX
-        window.cvs.y = (e.clientY - rect.top)/window.graph.zoom - dragOffsetY
-
-        // Adjust the mouse speed based on the zoom level
+        // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
         e.movementX /= window.graph.zoom
         e.movementY /= window.graph.zoom
 
@@ -54,6 +65,14 @@ export default function Canvas() {
         if (window.cvs.mouseUpCallback) window.cvs.mouseUpCallback(e.button, {x: window.cvs.x, y: window.cvs.y})
     }
 
+    const handleScroll = (e) => {
+        if (window.cvs.debug) console.log('Scroll:', e.deltaY)
+
+        if (window.cvs.mouseScrollCallback) window.cvs.mouseScrollCallback(e.deltaY, {x: window.cvs.x, y: window.cvs.y})
+    }
+
+    // --- Keyboard Events ---
+
     const handleKeyDown = (e) => {
         e.preventDefault()
         if (window.cvs.debug) console.log('Key down:', e.code)
@@ -72,11 +91,7 @@ export default function Canvas() {
         if (window.cvs.keyUpCallback) window.cvs.keyUpCallback(e.code, {x: window.cvs.x, y: window.cvs.y})
     }
 
-    const handleScroll = (e) => {
-        if (window.cvs.debug) console.log('Scroll:', e.deltaY)
-
-        if (window.cvs.mouseScrollCallback) window.cvs.mouseScrollCallback(e.deltaY, {x: window.cvs.x, y: window.cvs.y})
-    }
+    // --- Resize Event ---
 
     const handleResize = (e) => {
         if (window.cvs.debug) console.log('Resized:', e)
@@ -93,7 +108,10 @@ export default function Canvas() {
         if (window.cvs.resizeCallback) window.cvs.resizeCallback(e)
     }
 
-    // Other events
+    // ================================ Assign the events to the canvas HTML element ================================
+
+    // The following event listeners weren't added using JSX because the canvas element didn't allow to define the event listeners in the JSX code, 
+    // So it was necessary to add the event listeners in the useLayoutEffect hook.
     useLayoutEffect(() => {
         // Add the event listeners
         window.addEventListener('resize', handleResize)
@@ -114,9 +132,10 @@ export default function Canvas() {
                 onMouseUp={handleMouseUp}
                 onWheel={handleScroll}
 
-                onContextMenu={(e) => e.preventDefault()}
+                onContextMenu={(e) => e.preventDefault()}  // Disable the browser context menu
 
-                tabIndex={0}
-                autoFocus
+                // Required to make the canvas to receive keyboard events
+                tabIndex={0}  
+                autoFocus 
             />
 }

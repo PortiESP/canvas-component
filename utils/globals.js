@@ -1,4 +1,7 @@
 
+import constants from "../../graph-manager/utils/constants"
+import { getViewBox } from "../../graph-manager/utils/zoom"
+
 /**
  * 
  * This function will create global variables and methods that will be used throughout the application.
@@ -7,19 +10,19 @@
  * - `ctx`: The canvas 2D context
  * - `cvs`: An object containing the following properties and methods related to the canvas:
  *      Properties:
+ *          - `debug`: A boolean flag indicating whether the debug mode is enabled
  *          - `x`: The x coordinate of the mouse cursor on the canvas (relative to the canvas)
  *          - `y`: The y coordinate of the mouse cursor on the canvas (relative to the canvas)
- *          - `ctx`: The canvas 2D context
- *          - `$canvas`: The canvas element
- *          - `width`: The width of the canvas
- *          - `height`: The height of the canvas
- *          - `debug`: A boolean flag indicating whether the debug mode is enabled
  *          - `mouseDown`: The button code of the pressed mouse button, if any (null otherwise)
  *          - `lastMouseDown`: The timestamp of the last mouse down event (used to detect double clicks)
  *          - `key`: The key code of the pressed key, if any (null otherwise)
+ *          - `keysDown`: An object to store the state of the keys
  *          - `autoResize`: A boolean flag indicating whether the canvas should automatically resize to fit its parent container
+ *          - `ctx`: The canvas 2D context
+ *          - `$canvas`: The canvas element
+ *          - `canvasBoundingBox`: The bounding box of the canvas element
  *  
- *     Callbacks:
+ *     Callbacks: (this function receives the following callbacks as arguments: (e, {x, y}), where `e` is the event object and `{x, y}` are the mouse coordinates at the time of the event)
  *          - `mouseMoveCallback`: A callback function to be executed when the mouse is moved
  *          - `mouseDownCallback`: A callback function to be executed when a mouse button is pressed
  *          - `mouseUpCallback`: A callback function to be executed when a mouse button is released
@@ -35,10 +38,6 @@
  * @param {HTMLElement} $canvas Canvas element in the DOM
  * @param {CanvasRenderingContext2D} ctx Canvas 2D context (retrieved from the canvas element using `.getContext('2d')`)
  */
-
-import constants from "../../graph-manager/utils/constants"
-import { getViewBox } from "../../graph-manager/utils/zoom"
-
 export default function setupGlobals($canvas, ctx, debug = false) {
     // Define the global variables initial values
     
@@ -49,24 +48,24 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Debug mode
         debug,
 
-        // User coordinates
+        // Mouse coordinates in the canvas
         x: 0,
         y: 0,
 
-        // Canvas coordinates
+        // Canvas x and y coordinates and dimensions
         canvasBoundingBox: $canvas.getBoundingClientRect(),
-
+        
         // Mouse state
-        mouseMoveCallback: null,
         mouseDown: null, // Button code of the pressed mouse button, if any (null otherwise)
-        mouseDownCallback: null,
+        mouseMoveCallback: null,
         mouseUpCallback: null,
+        mouseDownCallback: null,
         mouseScrollCallback: null,
         lastMouseDown: 0, // Timestamp of the last mouse down event (used to detect double clicks)
 
         // Keyboard state
         key: null, // The key code of the last pressed key, if any (null otherwise)
-        keysDown: {}, // Object to store the state of the keys
+        keysDown: {}, // Object to store the state of the keys (true if the key is pressed, false or undefined otherwise)
         keyDownCallback: null,
         keyUpCallback: null,
 
@@ -82,21 +81,20 @@ export default function setupGlobals($canvas, ctx, debug = false) {
     // METHODS
     // Clear the canvas
     window.cvs.clear = () => {
-        const coords = getViewBox()
-        window.ctx.clearRect(coords.x - 100, coords.y - 100, coords.width + 200, coords.height + 200)
+        const coords = getViewBox()  // Get the coordinates of the view box
+        const margin = constants.CLEAN_MARGIN  // Margin to clear the canvas and avoid artifacts
+        window.ctx.clearRect(coords.x - margin, coords.y - margin, coords.width + margin*2, coords.height + margin*2)
     }
 
-    // Print debug info
+    // Prints debug information on the canvas. The data parameter is an array of strings to be printed as well.
     window.cvs.drawDebugInfo = (data) => {
+        const zoom = window.graph.zoom
+
         window.ctx.fillStyle = 'black'
-        window.ctx.font = '12px Arial'
+        window.ctx.font = `${12/zoom}px Arial`
         window.ctx.textAlign = 'right'
 
-        // Canvas drag offset
-        const dx = window.graph.canvasDragOffset.x
-        const dy = window.graph.canvasDragOffset.y
-
-        // Debug info
+        // Default Debug info
         data = [
             `(${window.cvs.x})  - (${window.cvs.y})`,
             "Mouse down: " + window.cvs.mouseDown,
@@ -106,11 +104,15 @@ export default function setupGlobals($canvas, ctx, debug = false) {
             ...data
         ]
 
+        // Canvas drag offset
+        const dragOffsetY = window.graph.canvasDragOffset.y
+        // Coords of the right side of the canvas minus a small margin of 10px
+        const posX = getViewBox().x2 - 10
+
         // Custom data
-        const offsetX = getViewBox().x2
-        const posX = offsetX - 10
         for (let i = 0; i < data.length; i++) {
-            const posY = 20 + i * 14 - dy
+            const lineY = i * 14 / zoom
+            const posY = 20 + lineY - dragOffsetY
             ctx.fillText(data[i], posX, posY)
         }
 
