@@ -23,7 +23,7 @@
  *          - `mouseMoveCallback`: A callback function to be executed when the mouse is moved
  *          - `mouseDownCallback`: A callback function to be executed when a mouse button is pressed
  *          - `mouseUpCallback`: A callback function to be executed when a mouse button is released
- *          - `scrollCallback`: A callback function to be executed when the mouse wheel is scrolled
+ *          - `mouseScrollCallback`: A callback function to be executed when the mouse wheel is scrolled
  *          - `keyDownCallback`: A callback function to be executed when a key is pressed
  *          - `keyUpCallback`: A callback function to be executed when a key is released
  *          - `resizeCallback`: A callback function to be executed when the window is resized
@@ -60,7 +60,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         mouseDown: null, // Button code of the pressed mouse button, if any (null otherwise)
         mouseDownCallback: null,
         mouseUpCallback: null,
-        scrollCallback: null,
+        mouseScrollCallback: null,
         lastMouseDown: 0, // Timestamp of the last mouse down event (used to detect double clicks)
 
         // Keyboard state
@@ -76,15 +76,12 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Drawing context
         ctx: ctx,
         $canvas: $canvas,
-
-        // Drag and offsets
-        canvasDragOffset: { x: 0, y: 0 } // Canvas drag offset
     }
 
     // METHODS
     // Clear the canvas
     window.cvs.clear = () => {
-        window.ctx.clearRect(0 - window.cvs.canvasDragOffset.x, 0 - window.cvs.canvasDragOffset.y, $canvas.width, $canvas.height)
+        window.ctx.clearRect(-window.graph.canvasDragOffset.x, -window.graph.canvasDragOffset.y, $canvas.width/window.graph.zoom, $canvas.height/window.graph.zoom)
     }
 
     // Print debug info
@@ -94,8 +91,8 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         window.ctx.textAlign = 'right'
 
         // Canvas drag offset
-        const dx = window.cvs.canvasDragOffset.x
-        const dy = window.cvs.canvasDragOffset.y
+        const dx = window.graph.canvasDragOffset.x
+        const dy = window.graph.canvasDragOffset.y
 
         // Debug info
         data = [
@@ -104,7 +101,6 @@ export default function setupGlobals($canvas, ctx, debug = false) {
             "Key: " + window.cvs.key,
             "Keys down: " + Object.keys(window.cvs.keysDown).filter(k => window.cvs.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
-            "Canvas drag offset: (" + window.cvs.canvasDragOffset.x + ") - (" + window.cvs.canvasDragOffset.y + ")",
             ...data
         ]
 
