@@ -15,8 +15,16 @@ export default function Canvas() {
         // Calculate the mouse coordinates relative to the canvas
         const rect = window.cvs.canvasBoundingBox
         // Store the mouse coordinates in the global variables, considering the canvas position and the canvas drag offset
-        window.cvs.x = e.clientX - rect.left - window.graph.canvasDragOffset.x
-        window.cvs.y = e.clientY - rect.top - window.graph.canvasDragOffset.y
+
+        const dragOffsetX = window.graph.canvasDragOffset.x
+        const dragOffsetY = window.graph.canvasDragOffset.y
+
+        window.cvs.x = (e.clientX - rect.left)/window.graph.zoom - dragOffsetX
+        window.cvs.y = (e.clientY - rect.top)/window.graph.zoom - dragOffsetY
+
+        // Adjust the mouse speed based on the zoom level
+        e.movementX /= window.graph.zoom
+        e.movementY /= window.graph.zoom
 
         if (window.cvs.mouseMoveCallback) window.cvs.mouseMoveCallback(e, {x: window.cvs.x, y: window.cvs.y})
     }

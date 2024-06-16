@@ -37,6 +37,7 @@
  */
 
 import constants from "../../graph-manager/utils/constants"
+import { getViewBox, getZoomOffset } from "../../graph-manager/utils/zoom"
 
 export default function setupGlobals($canvas, ctx, debug = false) {
     // Define the global variables initial values
@@ -81,7 +82,9 @@ export default function setupGlobals($canvas, ctx, debug = false) {
     // METHODS
     // Clear the canvas
     window.cvs.clear = () => {
-        window.ctx.clearRect(-window.graph.canvasDragOffset.x, -window.graph.canvasDragOffset.y, $canvas.width/window.graph.zoom, $canvas.height/window.graph.zoom)
+        const coords = getViewBox()
+        console.log(coords)
+        window.ctx.clearRect(coords.x - 100, coords.y - 100, coords.width + 200, coords.height + 200)
     }
 
     // Print debug info
@@ -105,8 +108,11 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         ]
 
         // Custom data
+        const zoomDx = getZoomOffset().right
+        const posX = window.cvs.$canvas.width - 10 - dx - zoomDx
         for (let i = 0; i < data.length; i++) {
-            ctx.fillText(data[i], window.cvs.$canvas.width - 10 - dx, 20 + i * 14 - dy)
+            const posY = 20 + i * 14 - dy
+            ctx.fillText(data[i], posX, posY)
         }
 
         // Reset the style
