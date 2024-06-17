@@ -34,8 +34,10 @@ export default function Canvas() {
         window.cvs.y = pointerY/window.graph.zoom - dragOffsetY
 
         // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
-        e.movementX /= window.graph.zoom
-        e.movementY /= window.graph.zoom
+        // We need to apply this correction factor to the movementX and movementY values since the speed of the mouse is not 100% accurate
+        const DISPLACEMENT_CORRECTION_FACTOR = 1.1
+        e.movementX /= window.graph.zoom * DISPLACEMENT_CORRECTION_FACTOR
+        e.movementY /= window.graph.zoom * DISPLACEMENT_CORRECTION_FACTOR
 
         if (window.cvs.mouseMoveCallback) window.cvs.mouseMoveCallback(e, {x: window.cvs.x, y: window.cvs.y})
     }
