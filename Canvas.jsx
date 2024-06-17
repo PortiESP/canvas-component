@@ -25,12 +25,12 @@ export default function Canvas() {
         // Position of the mouse relative to the canvas
         const pointerX = (e.clientX - rect.left)
         const pointerY = (e.clientY - rect.top)
-        // Compensate the canvas drag
-        const dragOffsetX = window.cvs.canvasDragOffset.x
-        const dragOffsetY = window.cvs.canvasDragOffset.y
-        // Adjust the pointer coordinates based on the zoom level and the canvas drag
-        window.cvs.x = pointerX/window.cvs.zoom + dragOffsetX
-        window.cvs.y = pointerY/window.cvs.zoom + dragOffsetY
+        // Compensate the canvas pan
+        const panOffsetX = window.cvs.canvasPanOffset.x
+        const panOffsetY = window.cvs.canvasPanOffset.y
+        // Adjust the pointer coordinates based on the zoom level and the canvas pan
+        window.cvs.x = pointerX/window.cvs.zoom + panOffsetX
+        window.cvs.y = pointerY/window.cvs.zoom + panOffsetY
 
         // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
         // We need to apply this correction factor to the movementX and movementY values since the speed of the mouse is not 100% accurate

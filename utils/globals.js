@@ -21,7 +21,7 @@ import { getViewBox } from "../../canvas/utils/zoom"
  *          - `ctx`: The canvas 2D context
  *          - `$canvas`: The canvas element
  *          - `canvasBoundingBox`: The bounding box of the canvas element
- *          - `canvasDragOffset`: An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
+ *          - `canvasPanOffset`: An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
  *          - `zoom`: The zoom factor
  *          - `zoomLevel`: The zoom level (index of the zoom factor in the zoom levels array at the constants file)
  *  
@@ -80,8 +80,8 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         ctx: ctx,
         $canvas: $canvas,
 
-        // Drag the canvas
-        canvasDragOffset: { x: 0, y: 0 }, // Coordinates of the canvas show at the top-left corner of the canvas
+        // Pan the canvas
+        canvasPanOffset: { x: 0, y: 0 }, // Coordinates of the canvas show at the top-left corner of the canvas
 
         // Zoom
         zoom: 1, // Zoom factor
@@ -112,19 +112,19 @@ export default function setupGlobals($canvas, ctx, debug = false) {
             "Key: " + window.cvs.key,
             "Keys down: " + Object.keys(window.cvs.keysDown).filter(k => window.cvs.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
-            "Canvas drag offset: (" + window.cvs.canvasDragOffset.x + ") - (" + window.cvs.canvasDragOffset.y + ")",
+            "Canvas pan offset: (" + window.cvs.canvasPanOffset.x + ") - (" + window.cvs.canvasPanOffset.y + ")",
             ...data
         ]
 
-        // Canvas drag offset
-        const dragOffsetY = window.cvs.canvasDragOffset.y
+        // Canvas pan offset
+        const panOffsetY = window.cvs.canvasPanOffset.y
         // Coords of the right side of the canvas minus a small margin of 10px
         const posX = getViewBox().x2 - 10
 
         // Custom data
         for (let i = 0; i < data.length; i++) {
             const lineY = i * 14 / zoom
-            const posY = 20 + lineY + dragOffsetY
+            const posY = 20 + lineY + panOffsetY
             ctx.fillText(data[i], posX, posY)
         }
 

@@ -18,7 +18,7 @@ export function resetZoom(){
  * - y2: The y coordinate of the bottom-right corner of the canvas
  */
 export function getViewBox(){
-    const {x, y} = window.cvs.canvasDragOffset
+    const {x, y} = window.cvs.canvasPanOffset
     const {width, height} = window.cvs.$canvas
     return {
         x,
@@ -54,9 +54,9 @@ export function zoomCenter(zoomIn){
     window.ctx.translate(-x, -y) // Apply again the canvas position
     window.ctx.translate(dx,dy)  // Apply the padding
 
-    // Update the canvas drag offset
-    window.cvs.canvasDragOffset.x -= dx
-    window.cvs.canvasDragOffset.y -= dy
+    // Update the canvas pan offset
+    window.cvs.canvasPanOffset.x -= dx
+    window.cvs.canvasPanOffset.y -= dy
     
     // Update the zoom level
     window.cvs.zoom = newZoom
