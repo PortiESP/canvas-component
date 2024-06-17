@@ -1,14 +1,18 @@
 export function checkShortcut(string){
     const keys = string.split("+")
 
-    keys.forEach(key => {
-        if (!checkKey(key)) return false
+    const allPressed = keys.every(key => {
+        if (checkKey(key)) return true
     })
 
+    if (!allPressed) return false
+
     // Check if only the keys in the shortcut are pressed
+    const validKeys = keys.map(key => getKeyFormAliases(key)).flat()
     for (const key in window.cvs.keysDown){
-        if (checkKey(key)) continue
-        if (!keys.includes(key) && window.cvs.keysDown[key]) return false
+        const isPressed = window.cvs.keysDown[key]
+        const includes = validKeys.includes(key)
+        if (!includes && isPressed) return false
     }
 
     return true
