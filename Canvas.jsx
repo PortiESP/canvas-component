@@ -1,5 +1,6 @@
 import { useLayoutEffect } from "react"
 import constants from "../graph-manager/utils/constants"
+import { zoomIn, zoomOut } from "./utils/zoom"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -68,6 +69,11 @@ export default function Canvas() {
 
     const handleScroll = (e) => {
         if (window.cvs.debug) console.log('Scroll:', e.deltaY)
+
+        const delta = e.deltaY
+        // Zoom in and out
+        if (delta < 0) zoomIn()
+        else if (delta > 0) zoomOut()
 
         if (window.cvs.mouseScrollCallback) window.cvs.mouseScrollCallback(e.deltaY, {x: window.cvs.x, y: window.cvs.y})
     }
