@@ -76,6 +76,13 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Drawing context
         ctx: ctx,
         $canvas: $canvas,
+
+        // Drag the canvas
+        canvasDragOffset: { x: 0, y: 0 }, // Coordinates of the canvas show at the top-left corner of the canvas
+
+        // Zoom
+        zoom: 1, // Zoom factor
+        zoomLevel: constants.ZOOM_LEVELS.indexOf(1), // Zoom level (index of the zoom factor in the zoom levels array at the constants file)
     }
 
     // METHODS
@@ -88,7 +95,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
 
     // Prints debug information on the canvas. The data parameter is an array of strings to be printed as well.
     window.cvs.drawDebugInfo = (data) => {
-        const zoom = window.graph.zoom
+        const zoom = window.cvs.zoom
 
         window.ctx.fillStyle = 'black'
         window.ctx.font = `${12/zoom}px Arial`
@@ -105,7 +112,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         ]
 
         // Canvas drag offset
-        const dragOffsetY = window.graph.canvasDragOffset.y
+        const dragOffsetY = window.cvs.canvasDragOffset.y
         // Coords of the right side of the canvas minus a small margin of 10px
         const posX = getViewBox().x2 - 10
 
