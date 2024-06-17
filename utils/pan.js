@@ -24,3 +24,19 @@ export function isDragging(){
     const option2 = window.cvs.mouseDown === constants.PAN_MOUSE_BUTTON
     return option1 || option2
 }
+
+/**
+ * Moves the canvas by the given offset by displacing the origin by a given amount.
+ * 
+ * Imagine an axis with the origin at the top-left corner of the canvas. 
+ * - The positive x-axis goes to the right.
+ * - The positive y-axis goes down.
+ *  
+ * @param {number} dx The offset in the x-axis.
+ * @param {number} dy The offset in the y-axis.
+ */
+export function panBy(dx, dy){
+    window.ctx.translate(dx, dy)
+    window.cvs.canvasPanOffset.x -= dx
+    window.cvs.canvasPanOffset.y -= dy
+}
