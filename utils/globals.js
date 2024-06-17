@@ -1,6 +1,6 @@
 
 import constants from "../../graph-manager/utils/constants"
-import { getViewBox } from "../../graph-manager/utils/zoom"
+import { getViewBox } from "../../canvas/utils/zoom"
 
 /**
  * 
@@ -21,6 +21,9 @@ import { getViewBox } from "../../graph-manager/utils/zoom"
  *          - `ctx`: The canvas 2D context
  *          - `$canvas`: The canvas element
  *          - `canvasBoundingBox`: The bounding box of the canvas element
+ *          - `canvasDragOffset`: An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
+ *          - `zoom`: The zoom factor
+ *          - `zoomLevel`: The zoom level (index of the zoom factor in the zoom levels array at the constants file)
  *  
  *     Callbacks: (this function receives the following callbacks as arguments: (e, {x, y}), where `e` is the event object and `{x, y}` are the mouse coordinates at the time of the event)
  *          - `mouseMoveCallback`: A callback function to be executed when the mouse is moved
@@ -104,10 +107,12 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Default Debug info
         data = [
             `(${window.cvs.x})  - (${window.cvs.y})`,
+            "Zoom: " + window.cvs.zoom,
             "Mouse down: " + window.cvs.mouseDown,
             "Key: " + window.cvs.key,
             "Keys down: " + Object.keys(window.cvs.keysDown).filter(k => window.cvs.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
+            "Canvas drag offset: (" + window.cvs.canvasDragOffset.x + ") - (" + window.cvs.canvasDragOffset.y + ")",
             ...data
         ]
 

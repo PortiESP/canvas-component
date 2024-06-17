@@ -1,6 +1,5 @@
 import { useLayoutEffect } from "react"
 import constants from "../graph-manager/utils/constants"
-import { getViewBox } from "../graph-manager/utils/zoom"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -22,7 +21,6 @@ export default function Canvas() {
     const handleMouseMove = (e) => {
         // Calculate the mouse coordinates relative to the canvas
         const rect = window.cvs.canvasBoundingBox
-        // Store the mouse coordinates in the global variables, considering the canvas position and the canvas drag offset
 
         // Position of the mouse relative to the canvas
         const pointerX = (e.clientX - rect.left)
