@@ -1,5 +1,6 @@
 import { useLayoutEffect } from "react"
 import constants from "../graph-manager/utils/constants"
+import { getViewBox } from "../graph-manager/utils/zoom"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -30,8 +31,8 @@ export default function Canvas() {
         const dragOffsetX = window.graph.canvasDragOffset.x
         const dragOffsetY = window.graph.canvasDragOffset.y
         // Adjust the pointer coordinates based on the zoom level and the canvas drag
-        window.cvs.x = pointerX/window.graph.zoom - dragOffsetX
-        window.cvs.y = pointerY/window.graph.zoom - dragOffsetY
+        window.cvs.x = pointerX/window.graph.zoom + dragOffsetX
+        window.cvs.y = pointerY/window.graph.zoom + dragOffsetY
 
         // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
         // We need to apply this correction factor to the movementX and movementY values since the speed of the mouse is not 100% accurate

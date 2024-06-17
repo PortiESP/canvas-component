@@ -112,7 +112,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Custom data
         for (let i = 0; i < data.length; i++) {
             const lineY = i * 14 / zoom
-            const posY = 20 + lineY - dragOffsetY
+            const posY = 20 + lineY + dragOffsetY
             ctx.fillText(data[i], posX, posY)
         }
 
