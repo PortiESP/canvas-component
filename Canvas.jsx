@@ -1,6 +1,7 @@
 import { useLayoutEffect } from "react"
-import constants from "../graph-manager/utils/constants"
+import constants from "./utils/constants"
 import { zoomIn, zoomOut } from "./utils/zoom"
+import { isPanning } from "./utils/pan"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -39,63 +40,120 @@ export default function Canvas() {
         e.movementX /= window.cvs.zoom * DISPLACEMENT_CORRECTION_FACTOR
         e.movementY /= window.cvs.zoom * DISPLACEMENT_CORRECTION_FACTOR
 
+        // --- Default actions ---
+        // Pan the canvas
+        if (isPanning()) {
+            const { movementX: dx, movementY: dy } = e
+            window.cvs.canvasPanOffset = { x: window.cvs.canvasPanOffset.x - dx, y: window.cvs.canvasPanOffset.y - dy }
+            window.ctx.translate(dx, dy)
+
+            return true
+        }
+
+        // --- Callbacks ---
         if (window.cvs.mouseMoveCallback) window.cvs.mouseMoveCallback(e, {x: window.cvs.x, y: window.cvs.y})
     }
 
     const handleMouseDown = (e) => {
         e.preventDefault()
-        if (window.cvs.debug) console.log('Mouse down:', e.button)
+        const button = e.button
+        if (window.cvs.debug) console.log('Mouse down:', button)
 
-        window.cvs.mouseDown = e.button
+        window.cvs.mouseDown = button
+
+        // --- Default actions ---
+        // Check pan
+        if (isPanning()) {
+            document.body.style.cursor = "grabbing"
+            return true
+        }
         
+        // --- Callbacks ---
         // Check double click
         if (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY) {
             window.cvs.lastMouseDown = Date.now()
-            if (window.cvs.mouseDoubleClickCallback) window.cvs.mouseDoubleClickCallback(e.button, {x: window.cvs.x, y: window.cvs.y})
+            if (window.cvs.mouseDoubleClickCallback) window.cvs.mouseDoubleClickCallback(button, {x: window.cvs.x, y: window.cvs.y})
                 return
         } else window.cvs.lastMouseDown = Date.now()
 
         // Single click
-        if (window.cvs.mouseDownCallback) window.cvs.mouseDownCallback(e.button, {x: window.cvs.x, y: window.cvs.y})
+        if (window.cvs.mouseDownCallback) window.cvs.mouseDownCallback(button, {x: window.cvs.x, y: window.cvs.y})
     }
 
     const handleMouseUp = (e) => {
         e.preventDefault()
-        if (window.cvs.debug) console.log('Mouse up:', e.button)
+        const button = e.button
+        if (window.cvs.debug) console.log('Mouse up:', button)
 
         window.cvs.mouseDown = null
-        if (window.cvs.mouseUpCallback) window.cvs.mouseUpCallback(e.button, {x: window.cvs.x, y: window.cvs.y})
+
+        // --- Default actions ---
+        if (window.cvs.keysDown[constants.PAN_KEY]) {
+            document.body.style.cursor = "grab"
+            return true
+        }
+        // Release the pan key
+        if (button === 1) {
+            document.body.style.cursor = "default"
+            return true
+        }
+
+        // --- Callbacks ---
+        if (window.cvs.mouseUpCallback) window.cvs.mouseUpCallback(button, {x: window.cvs.x, y: window.cvs.y})
     }
 
     const handleScroll = (e) => {
-        if (window.cvs.debug) console.log('Scroll:', e.deltaY)
+        const deltaY = e.deltaY
+        if (window.cvs.debug) console.log('Scroll:', deltaY)
 
-        const delta = e.deltaY
+        // --- Default actions ---
         // Zoom in and out
-        if (delta < 0) zoomIn()
-        else if (delta > 0) zoomOut()
+        if (deltaY < 0) zoomIn()
+        else if (deltaY > 0) zoomOut()
 
-        if (window.cvs.mouseScrollCallback) window.cvs.mouseScrollCallback(e.deltaY, {x: window.cvs.x, y: window.cvs.y})
+        // --- Callbacks ---
+        if (window.cvs.mouseScrollCallback) window.cvs.mouseScrollCallback(deltaY, {x: window.cvs.x, y: window.cvs.y})
     }
 
     // --- Keyboard Events ---
 
     const handleKeyDown = (e) => {
         e.preventDefault()
-        if (window.cvs.debug) console.log('Key down:', e.code)
+        const code = e.code
+        if (window.cvs.debug) console.log('Key down:', code)
 
-        window.cvs.key = e.code
-        window.cvs.keysDown[e.code] = true
-        if (window.cvs.keyDownCallback) window.cvs.keyDownCallback(e.code, {x: window.cvs.x, y: window.cvs.y})
+        // Store the key pressed
+        window.cvs.key = code
+        window.cvs.keysDown[code] = true
+
+        // --- Default shortcuts ---
+        // Pan the canvas
+        if (code === constants.PAN_KEY) {
+            if (document.body.style.cursor !== "grabbing") document.body.style.cursor = "grab"
+            return true
+        }
+
+        // --- Any other key ---
+        if (window.cvs.keyDownCallback) window.cvs.keyDownCallback(code, {x: window.cvs.x, y: window.cvs.y})
     }
 
     const handleKeyUp = (e) => {
         e.preventDefault()
-        if (window.cvs.debug) console.log('Key up:', e.code)
+        const code = e.code
+        if (window.cvs.debug) console.log('Key up:', code)
 
         window.cvs.key = null
-        window.cvs.keysDown[e.code] = false
-        if (window.cvs.keyUpCallback) window.cvs.keyUpCallback(e.code, {x: window.cvs.x, y: window.cvs.y})
+        window.cvs.keysDown[code] = false
+
+        // --- Default shortcuts ---
+        // Pan the canvas
+        if (code === constants.PAN_KEY) {
+            document.body.style.cursor = "default"
+            return true
+        }
+
+        // --- Callbacks ---
+        if (window.cvs.keyUpCallback) window.cvs.keyUpCallback(code, {x: window.cvs.x, y: window.cvs.y})
     }
 
     // --- Resize Event ---
@@ -103,6 +161,8 @@ export default function Canvas() {
     const handleResize = (e) => {
         if (window.cvs.debug) console.log('Resized:', e)
 
+        // --- Default actions ---
+        // Auto resize the canvas, if enabled
         if (window.cvs.autoResize){
             const $canvas = window.cvs.$canvas
             const parent = $canvas.parentElement.getBoundingClientRect()
@@ -112,6 +172,8 @@ export default function Canvas() {
             // Update the canvas bounding box
             window.cvs.canvasBoundingBox = $canvas.getBoundingClientRect()
         }
+
+        // --- Callbacks ---
         if (window.cvs.resizeCallback) window.cvs.resizeCallback(e)
     }
 

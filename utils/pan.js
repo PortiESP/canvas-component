@@ -11,15 +11,15 @@ export function resetPan(){
 }
 
 /**
- * Returns true if the user has the dragging keys pressed.
+ * Returns true if the user has the panning keys pressed.
  * 
- * The dragging action can be triggered by any of the following:
+ * The panning action can be triggered by any of the following:
  * - Holding the pan key (Space+LeftMouseButton)
  * - Holding the pan mouse button (Middle mouse button)
  * 
- * @returns {boolean} Whether the user is dragging elements in the canvas.
+ * @returns {boolean} Whether the user is panning elements in the canvas.
  */
-export function isDragging(){
+export function isPanning(){
     const option1 = window.cvs.keysDown[constants.PAN_KEY] && window.cvs.mouseDown === 0
     const option2 = window.cvs.mouseDown === constants.PAN_MOUSE_BUTTON
     return option1 || option2
