@@ -55,9 +55,18 @@ export default function Canvas() {
     const handleMouseDown = (e) => {
         e.preventDefault()
         const button = e.button
-        if (window.cvs.debug) console.log('Mouse down:', button)
-
         window.cvs.mouseDown = button
+
+        // --- Debug mode ---
+        if (window.cvs.debug) {
+            console.log('Mouse down:', button)
+
+            // Check if any debug command was triggered
+            if (button === 0 && window.cvs.debugCommandHover){
+                window.cvs.debugCommandHover.callback()
+                return true
+            }
+        }
 
         // --- Default actions ---
         // Check pan

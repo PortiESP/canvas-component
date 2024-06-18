@@ -50,6 +50,17 @@ export default function setupGlobals($canvas, ctx, debug = false) {
     window.cvs = {
         // Debug mode
         debug,
+        debugCommands: [
+            {
+                label: 'Close debug mode',
+                callback: () => window.cvs.debug = false
+            },
+            {
+                label: 'Toggle auto resize',
+                callback: () => window.cvs.autoResize = !window.cvs.autoResize
+            }
+        ],
+        debugCommandHover: null,
 
         // Mouse coordinates in the canvas
         x: 0,
@@ -127,6 +138,49 @@ export default function setupGlobals($canvas, ctx, debug = false) {
             const lineY = i * 14/zoom
             const posY = 20/zoom + lineY + panOffsetY
             ctx.fillText(data[i], posX, posY)
+        }
+
+        // Last line following coordinates
+        const cmdsY = 20/zoom + data.length * 14/zoom + panOffsetY
+        const cmdsX = posX 
+        const cmdsH = 20/zoom
+
+
+        // Draw debug commands as small buttons
+        let isHover = undefined
+        for (let i = 0; i < window.cvs.debugCommands.length; i++) {
+            const command = window.cvs.debugCommands[i]
+            const cmdY = cmdsY + i * cmdsH *1.2
+            const textW = ctx.measureText(command.label).width
+
+            // Draw the command label
+            ctx.fillStyle = 'black'
+            ctx.textAlign = "right"
+            ctx.fillText(command.label, posX, cmdY + 12/zoom)
+
+            const btnX1 = posX - textW - 5/zoom
+            const btnX2 = posX + 5/zoom
+            const btnY1 = cmdY
+            const btnY2 = cmdY + cmdsH
+
+            // Draw the command button
+            ctx.strokeStyle = 'black'
+            ctx.fillStyle = '#8888'
+            ctx.fillRect(btnX1, btnY1, textW + 10/zoom, cmdsH)
+
+            // Hover
+            if (window.cvs.x > posX - textW - 5/zoom && window.cvs.x < posX + 5/zoom && window.cvs.y > cmdY && window.cvs.y < cmdY + cmdsH) {
+                ctx.fillStyle = '#fff2'
+                ctx.fillRect(posX - textW - 5/zoom, cmdY, textW + 10/zoom, cmdsH)
+                isHover = command
+            }
+        }
+
+        // Hover
+        if (isHover) {
+            window.cvs.debugCommandHover = isHover
+        } else {
+            window.cvs.debugCommandHover = null
         }
 
         // Reset the style
