@@ -1,6 +1,6 @@
 
 import constants from "./constants"
-import { getViewBox } from "../../canvas/utils/zoom"
+import { getViewBox, resetZoom, zoomBy, zoomTo } from "../../canvas/utils/zoom"
 
 /**
  * 
@@ -48,16 +48,25 @@ export default function setupGlobals($canvas, ctx, debug = false) {
     window.ctx = ctx
     // Canvas data
     window.cvs = {
-        // Debug mode
+        // --- Debug mode ---
         debug,
+        debugData: undefined, // Function to that returns an array of strings to be printed on the canvas
         debugCommands: [
             {
                 label: 'Close debug mode',
                 callback: () => window.cvs.debug = false
             },
             {
-                label: 'Toggle auto resize',
-                callback: () => window.cvs.autoResize = !window.cvs.autoResize
+                label: 'Zoom by 1.1',
+                callback: () => zoomBy(1.1)
+            },
+            {
+                label: 'Zoom to 2',
+                callback: () => zoomTo(2)
+            },
+            {
+                label: 'Reset zoom',
+                callback: () => resetZoom()
             }
         ],
         debugCommandHover: null,

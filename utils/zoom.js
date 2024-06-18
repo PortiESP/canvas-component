@@ -5,8 +5,7 @@ import { panBy } from "./pan"
  * Resets the zoom of the graph to the default value (1).
  */
 export function resetZoom(){
-    window.ctx.scale(1/window.cvs.zoom, 1/window.cvs.zoom)
-    window.cvs.zoom = 1
+    zoomBy(1/window.cvs.zoom)
 }
 
 /**
@@ -86,28 +85,40 @@ export function zoomOut(){
 
 
 export function zoomToFit(toWidth, toHeight){
-    const {x, y, width: currentWidth, height: currentHeight, x2, y2} = getViewBox()
+    const {width: currentWidth, height: currentHeight} = getViewBox()
 
     const widthRatio = currentWidth / toWidth
     const heightRatio = currentHeight / toHeight
 
     const zoomFactor = Math.min(widthRatio, heightRatio)
     
-    // Apply the zoom (we need to revert the canvas position since the zoom is applied from the top-left corner of the canvas)
+    zoomBy(zoomFactor)
+}
+
+export function zoomBy(zoomFactor){
+    const {x, y, x2, y2} = getViewBox()
+    const userXRatio = (window.cvs.x - x)/(x2-x)
+    const userYRatio = (window.cvs.y - y)/(y2-y)
+    const newZoom = window.cvs.zoom * zoomFactor
+
+    // Apply the zoom (we need to revert the canvas position since the zoom is applied from the coord (0, 0) of the canvas)
     window.ctx.translate(x, y) // Reset the canvas position
     window.ctx.scale(zoomFactor, zoomFactor) // Apply the zoom
     window.ctx.translate(-x, -y) // Apply again the canvas position
-    
+
     // Update the zoom level
-    window.cvs.zoom *= zoomFactor
-    
-    const {x2: newX2, y2: newY2} = getViewBox()
-    const userX = window.cvs.x  // Current mouse position
-    const userY = window.cvs.y
-    const newUserX = userX/x2*newX2
-    const newUserY = userY/y2*newY2
+    window.cvs.zoom = newZoom
+
+    const {x: newX1, y: newY1, width, height} = getViewBox()
+    const newUserX = userXRatio*width + newX1
+    const newUserY = userYRatio*height + newY1
 
     // Update the canvas position
     window.cvs.x = newUserX
     window.cvs.y = newUserY
+}
+
+export function zoomTo(zoom){
+    resetZoom()
+    zoomBy(zoom)
 }
