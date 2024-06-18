@@ -24,6 +24,11 @@ export function zoomBy(zoomFactor){
     window.cvs.y = newUserY
 }
 
+export function zoomTo(zoom){
+    resetZoom()
+    zoomBy(zoom)
+}
+
 /**
  * Resets the zoom of the graph to the default value (1).
  */
@@ -55,12 +60,14 @@ export function getViewBox(){
     }
 }
 
+
+
 /**
  * Zooms the graph to a specific level.
  * 
  * @param {Boolean} zoomIn - Whether to zoom in or out. If true, zooms in, otherwise zooms out.
  */
-export function zoomToMouse(zoomIn){
+export function zoomAtMouse(zoomIn){
     // Determine the zoom factor
     const zoomFactor = zoomIn ? 1.1 : 0.9
 
@@ -93,7 +100,7 @@ export function zoomToMouse(zoomIn){
  */
 export function zoomIn(){
     const {x, y} = window.cvs
-    zoomToMouse(true)
+    zoomAtMouse(true)
 }
 
 
@@ -102,7 +109,7 @@ export function zoomIn(){
  */
 export function zoomOut(){
     const {x, y} = window.cvs
-    zoomToMouse(false)
+    zoomAtMouse(false)
 }
 
 
@@ -115,9 +122,4 @@ export function zoomToFit(toWidth, toHeight){
     const zoomFactor = Math.min(widthRatio, heightRatio)
     
     zoomBy(zoomFactor)
-}
-
-export function zoomTo(zoom){
-    resetZoom()
-    zoomBy(zoom)
 }

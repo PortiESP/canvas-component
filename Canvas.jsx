@@ -35,10 +35,8 @@ export default function Canvas() {
         window.cvs.y = pointerY/window.cvs.zoom + panOffsetY
 
         // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
-        // We need to apply this correction factor to the movementX and movementY values since the speed of the mouse is not 100% accurate
-        const DISPLACEMENT_CORRECTION_FACTOR = 1.1
-        e.movementX /= window.cvs.zoom * DISPLACEMENT_CORRECTION_FACTOR
-        e.movementY /= window.cvs.zoom * DISPLACEMENT_CORRECTION_FACTOR
+        e.movementX /= window.cvs.zoom
+        e.movementY /= window.cvs.zoom
 
         // --- Default actions ---
         // Pan the canvas
