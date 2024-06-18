@@ -119,12 +119,12 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         // Canvas pan offset
         const panOffsetY = window.cvs.canvasPanOffset.y
         // Coords of the right side of the canvas minus a small margin of 10px
-        const posX = getViewBox().x2 - 10
+        const posX = getViewBox().x2 - 10/zoom
 
         // Custom data
         for (let i = 0; i < data.length; i++) {
-            const lineY = i * 14 / zoom
-            const posY = 20 + lineY + panOffsetY
+            const lineY = i * 14/zoom
+            const posY = 20/zoom + lineY + panOffsetY
             ctx.fillText(data[i], posX, posY)
         }
 
