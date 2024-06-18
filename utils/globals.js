@@ -57,14 +57,6 @@ export default function setupGlobals($canvas, ctx, debug = false) {
                 callback: () => window.cvs.debug = false
             },
             {
-                label: 'Zoom by 1.1',
-                callback: () => zoomBy(1.1)
-            },
-            {
-                label: 'Zoom to 2',
-                callback: () => zoomTo(2)
-            },
-            {
                 label: 'Reset zoom',
                 callback: () => resetZoom()
             }
