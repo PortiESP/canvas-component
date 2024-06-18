@@ -1,5 +1,5 @@
 
-import constants from "../../graph-manager/utils/constants"
+import constants from "./constants"
 import { getViewBox } from "../../canvas/utils/zoom"
 
 /**

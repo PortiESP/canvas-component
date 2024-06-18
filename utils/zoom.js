@@ -1,3 +1,6 @@
+import constants from "./constants"
+import { panBy } from "./pan"
+
 /**
  * Resets the zoom of the graph to the default value (1).
  */
@@ -52,11 +55,9 @@ export function zoomCenter(zoomIn){
     window.ctx.translate(x, y) // Reset the canvas position
     window.ctx.scale(zoomFactor, zoomFactor) // Apply the zoom
     window.ctx.translate(-x, -y) // Apply again the canvas position
-    window.ctx.translate(dx,dy)  // Apply the padding
 
-    // Update the canvas pan offset
-    window.cvs.canvasPanOffset.x -= dx
-    window.cvs.canvasPanOffset.y -= dy
+    // Update the canvas position
+    panBy(dx, dy)
     
     // Update the zoom level
     window.cvs.zoom = newZoom
