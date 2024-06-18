@@ -54,6 +54,7 @@ export default function Canvas() {
         e.preventDefault()
         const button = e.button
         window.cvs.mouseDown = button
+        window.cvs.draggingOrigin = {x: window.cvs.x, y: window.cvs.y}
 
         // --- Debug mode ---
         if (window.cvs.debug) {
@@ -93,6 +94,7 @@ export default function Canvas() {
 
         window.cvs.mouseDown = null
         window.cvs.doubleClick = false
+        window.cvs.draggingOrigin = null
 
         // --- Default actions ---
         if (window.cvs.keysDown[constants.PAN_KEY]) {

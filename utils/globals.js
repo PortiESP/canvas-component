@@ -78,6 +78,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         mouseScrollCallback: null,
         lastMouseDown: 0, // Timestamp of the last mouse down event (used to detect double clicks)
         doubleClick: false, // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
+        draggingOrigin: null, // Coordinates of the origin of the dragging action
 
         // Keyboard state
         key: null, // The key code of the last pressed key, if any (null otherwise)
@@ -122,6 +123,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
             `(${window.cvs.x})  - (${window.cvs.y})`,
             "Zoom: " + window.cvs.zoom,
             "Mouse down: " + window.cvs.mouseDown,
+            "Dragging origin: " + (window.cvs.draggingOrigin ? `(${window.cvs.draggingOrigin.x}) - (${window.cvs.draggingOrigin.y})` : "None"),
             "Key: " + window.cvs.key,
             "Keys down: " + Object.keys(window.cvs.keysDown).filter(k => window.cvs.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
