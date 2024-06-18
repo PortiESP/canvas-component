@@ -1,7 +1,7 @@
 import { useLayoutEffect } from "react"
 import constants from "./utils/constants"
 import { zoomIn, zoomOut } from "./utils/zoom"
-import { isPanning } from "./utils/pan"
+import { isPanning, panBy } from "./utils/pan"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -43,9 +43,7 @@ export default function Canvas() {
         // --- Default actions ---
         // Pan the canvas
         if (isPanning()) {
-            const { movementX: dx, movementY: dy } = e
-            window.cvs.canvasPanOffset = { x: window.cvs.canvasPanOffset.x - dx, y: window.cvs.canvasPanOffset.y - dy }
-            window.ctx.translate(dx, dy)
+            panBy(e.movementX, e.movementY)
 
             return true
         }
@@ -72,8 +70,9 @@ export default function Canvas() {
         // Check double click
         if (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY) {
             window.cvs.lastMouseDown = Date.now()
+            window.cvs.doubleClick = true
             if (window.cvs.mouseDoubleClickCallback) window.cvs.mouseDoubleClickCallback(button, {x: window.cvs.x, y: window.cvs.y})
-                return
+            return true
         } else window.cvs.lastMouseDown = Date.now()
 
         // Single click
@@ -86,6 +85,7 @@ export default function Canvas() {
         if (window.cvs.debug) console.log('Mouse up:', button)
 
         window.cvs.mouseDown = null
+        window.cvs.doubleClick = false
 
         // --- Default actions ---
         if (window.cvs.keysDown[constants.PAN_KEY]) {

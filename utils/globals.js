@@ -65,6 +65,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
         mouseDownCallback: null,
         mouseScrollCallback: null,
         lastMouseDown: 0, // Timestamp of the last mouse down event (used to detect double clicks)
+        doubleClick: false, // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
 
         // Keyboard state
         key: null, // The key code of the last pressed key, if any (null otherwise)
