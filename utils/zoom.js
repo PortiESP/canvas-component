@@ -49,7 +49,7 @@ export function zoomCenter(zoomIn){
     const userX = window.cvs.x  // Current mouse position
     const userY = window.cvs.y
     const dx = -(width*zoomFactor - width)/2  // Calculate the offset to center the zoom (padding)
-    const dy = -(width*zoomFactor - width)/2
+    const dy = -(height*zoomFactor - height)/2
 
     // Apply the zoom (we need to revert the canvas position since the zoom is applied from the top-left corner of the canvas)
     window.ctx.translate(x, y) // Reset the canvas position
@@ -82,4 +82,32 @@ export function zoomIn(){
 export function zoomOut(){
     const {x, y} = window.cvs
     zoomCenter(false)
+}
+
+
+export function zoomToFit(toWidth, toHeight){
+    const {x, y, width: currentWidth, height: currentHeight, x2, y2} = getViewBox()
+
+    const widthRatio = currentWidth / toWidth
+    const heightRatio = currentHeight / toHeight
+
+    const zoomFactor = Math.min(widthRatio, heightRatio)
+    
+    // Apply the zoom (we need to revert the canvas position since the zoom is applied from the top-left corner of the canvas)
+    window.ctx.translate(x, y) // Reset the canvas position
+    window.ctx.scale(zoomFactor, zoomFactor) // Apply the zoom
+    window.ctx.translate(-x, -y) // Apply again the canvas position
+    
+    // Update the zoom level
+    window.cvs.zoom *= zoomFactor
+    
+    const {x2: newX2, y2: newY2} = getViewBox()
+    const userX = window.cvs.x  // Current mouse position
+    const userY = window.cvs.y
+    const newUserX = userX/x2*newX2
+    const newUserY = userY/y2*newY2
+
+    // Update the canvas position
+    window.cvs.x = newUserX
+    window.cvs.y = newUserY
 }

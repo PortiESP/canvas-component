@@ -39,4 +39,21 @@ export function panBy(dx, dy){
     window.ctx.translate(dx, dy)
     window.cvs.canvasPanOffset.x -= dx
     window.cvs.canvasPanOffset.y -= dy
+    window.cvs.x -= dx
+    window.cvs.y -= dy
+}
+
+/**
+ * Moves the canvas to the given position.
+ * 
+ * Imagine an axis with the origin at the top-left corner of the canvas. 
+ * - The positive x-axis goes to the right.
+ * - The positive y-axis goes down.
+ *  
+ * @param {number} x The new x position.
+ * @param {number} y The new y position.
+ */
+export function panTo(x, y){
+    const {x: currentX, y: currentY} = getViewBox()
+    panBy(currentX - x, currentY - y)
 }
