@@ -94,12 +94,6 @@ Callbacks | Description
 `keyUpCallback` | Function. A callback function that is called when a keyboard key is released. Params: (`key`). The `key` parameter is the key code (String) of the released key.
 `resizeCallback` | Function. A callback function that is called when the canvas is resized. Params: (`{width, height}`). The `{width, height}` parameter is the new size of the canvas in pixels.
 
-Methods | Description
---- | ---
-`clear` | Function. Clears the canvas.
-`drawDebugInfo` | Function. Draws debug information on the canvas. It receives an optional parameter `data` that can be used to display additional information. This function is called automatically if the `debug` property is set to true.
-
-
 ## Add support for new canvas DOM events
 
 To add support for new canvas DOM events:

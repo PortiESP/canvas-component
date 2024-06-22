@@ -1,3 +1,4 @@
+import { clean } from "./canvas_utils"
 import setupGlobals from "./globals"
 
 /**
@@ -30,7 +31,7 @@ export function setupCanvas(callback, debug = false) {
 
 /**
  * Runs the main loop of the application. This function will be called only once and will call the callback function on every frame.
- *      - This function will clear the canvas on every frame
+ *      - This function will clean the canvas on every frame
  *      - The callback function will be called with no arguments
  *      - The function already does the requestAnimationFrame loop call
  * 
@@ -39,8 +40,8 @@ export function setupCanvas(callback, debug = false) {
 export function mainLoop (callback){
     // =========== Main drawing loop ===========
     const loop = () => {
-        // Clear the canvas
-        cvs.clear()
+        // Clean the canvas
+        clean()
 
         // Draw all nodes
         callback()
