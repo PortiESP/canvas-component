@@ -10,8 +10,8 @@ import { isPanning, panBy } from "./utils/pan"
  * 
  * Most of the events will run a default action, like preventing the default behavior of the event, and then call the callback function if it is defined. 
  * The callbacks are defined in the global variables and can be changed at any time. This callback functions as supposed to be defined in `setupCanvas` function as explained in README basic example.
+ * @See `setupGlobals` from `utils/globals.js` for more information about the global variables and available callbacks.
  * 
- * @See the `globals.js` file for more information about the available global variables.
  * @returns The canvas element using JSX
  */
 export default function Canvas() {
@@ -40,10 +40,9 @@ export default function Canvas() {
 
         // --- Default actions ---
         // Pan the canvas
-        if (isPanning()) {
+        if (isPanning()) {  // Check if the pan key is pressed
             panBy(e.movementX, e.movementY)
-
-            return true
+            return  // Prevent further actions
         }
 
         // --- Callbacks ---
@@ -52,8 +51,12 @@ export default function Canvas() {
 
     const handleMouseDown = (e) => {
         e.preventDefault()
+
         const button = e.button
+
+        // Store the mouse down button
         window.cvs.mouseDown = button
+        // Store the coordinates of the mouse at the moment of the mouse down event (just in case the user wants to drag the canvas)
         window.cvs.draggingOrigin = {x: window.cvs.x, y: window.cvs.y}
 
         // --- Debug mode ---
@@ -63,15 +66,14 @@ export default function Canvas() {
             // Check if any debug command was triggered
             if (button === 0 && window.cvs.debugCommandHover){
                 window.cvs.debugCommandHover.callback()
-                return true
+                return
             }
         }
 
         // --- Default actions ---
-        // Check pan
-        if (isPanning()) {
+        if (isPanning()) {  // Check if the pan key is pressed
             document.body.style.cursor = "grabbing"
-            return true
+            return // Prevent further actions
         }
         
         // --- Callbacks ---
@@ -80,7 +82,7 @@ export default function Canvas() {
             window.cvs.lastMouseDown = Date.now()
             window.cvs.doubleClick = true
             if (window.cvs.mouseDoubleClickCallback) window.cvs.mouseDoubleClickCallback(button, {x: window.cvs.x, y: window.cvs.y})
-            return true
+            return 
         } else window.cvs.lastMouseDown = Date.now()
 
         // Single click
@@ -89,22 +91,26 @@ export default function Canvas() {
 
     const handleMouseUp = (e) => {
         e.preventDefault()
+
         const button = e.button
+
+        // --- Debug mode ---
         if (window.cvs.debug) console.log('Mouse up:', button)
 
+        // Reset the mouse state
         window.cvs.mouseDown = null
         window.cvs.doubleClick = false
         window.cvs.draggingOrigin = null
 
         // --- Default actions ---
-        if (window.cvs.keysDown[constants.PAN_KEY]) {
+        if (window.cvs.keysDown[constants.PAN_KEY]) {  // Check if the pan key is still pressed 
             document.body.style.cursor = "grab"
-            return true
+            return // Prevent further actions
         }
         // Release the pan key
-        if (button === 1) {
+        if (button === 1) { // Middle mouse button (usually the mouse button for panning)
             document.body.style.cursor = "default"
-            return true
+            return // Prevent further actions
         }
 
         // --- Callbacks ---
@@ -113,6 +119,8 @@ export default function Canvas() {
 
     const handleScroll = (e) => {
         const deltaY = e.deltaY
+
+        // --- Debug mode ---
         if (window.cvs.debug) console.log('Scroll:', deltaY)
 
         // --- Default actions ---
@@ -128,37 +136,44 @@ export default function Canvas() {
 
     const handleKeyDown = (e) => {
         e.preventDefault()
+
         const code = e.code
+
+        // --- Debug mode ---
         if (window.cvs.debug) console.log('Key down:', code)
 
         // Store the key pressed
-        window.cvs.key = code
-        window.cvs.keysDown[code] = true
+        window.cvs.key = code  // Store the key code (used to check the last key pressed, overwriting the previous key code even if that key is still pressed. That's why the keysDown object is used to store the state of the keys)
+        window.cvs.keysDown[code] = true  // Store the key state
 
         // --- Default shortcuts ---
-        // Pan the canvas
-        if (code === constants.PAN_KEY) {
+        if (code === constants.PAN_KEY) { // The pan key is pressed
+            // Change the cursor to the grab cursor to indicate that the canvas can be panned, but only if the mouse is not already dragging an element
             if (document.body.style.cursor !== "grabbing") document.body.style.cursor = "grab"
-            return true
+            return // Prevent further actions
         }
 
-        // --- Any other key ---
+        // --- Callback ---
         if (window.cvs.keyDownCallback) window.cvs.keyDownCallback(code, {x: window.cvs.x, y: window.cvs.y})
     }
 
     const handleKeyUp = (e) => {
+
         e.preventDefault()
+
         const code = e.code
+
+        // --- Debug mode ---
         if (window.cvs.debug) console.log('Key up:', code)
 
+        // Reset the key pressed
         window.cvs.key = null
         window.cvs.keysDown[code] = false
 
         // --- Default shortcuts ---
-        // Pan the canvas
-        if (code === constants.PAN_KEY) {
+        if (code === constants.PAN_KEY) { // The pan key is released
             document.body.style.cursor = "default"
-            return true
+            return // Prevent further actions
         }
 
         // --- Callbacks ---
@@ -168,11 +183,11 @@ export default function Canvas() {
     // --- Resize Event ---
 
     const handleResize = (e) => {
+        // --- Debug mode ---
         if (window.cvs.debug) console.log('Resized:', e)
 
         // --- Default actions ---
-        // Auto resize the canvas, if enabled
-        if (window.cvs.autoResize){
+        if (window.cvs.autoResize){ // Auto resize the canvas, if enabled
             const $canvas = window.cvs.$canvas
             const parent = $canvas.parentElement.getBoundingClientRect()
             $canvas.width = parent.width

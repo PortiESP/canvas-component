@@ -8,6 +8,7 @@ import setupGlobals from "./globals"
  * The callback function will be called after the canvas is ready and the global variables created. The callback function will be called with no arguments.
  * 
  * Use the callback function define the initial state of the application and the event callbacks.
+ * @See {@link globals.js} for more information about the global variables
  * 
  * @param {Function} callback The function to be called after the canvas is ready
  * @param {Boolean} debug Whether to enable the debug mode or not
