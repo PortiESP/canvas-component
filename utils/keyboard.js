@@ -1,33 +1,71 @@
+/**
+ * Check if a combination of keys is pressed, and no other keys are pressed meanwhile.
+ * 
+ * The format of the string should be "<key>+<key>+...+<key>", where each key is a key code or alias.
+ * 
+ * @See {@link getKeysFromAlias} for the list of aliases.
+ * 
+ * @param {String} string The shortcut to be checked. It should be in the format: "Ctrl+Shift+Z"
+ * @returns Boolean indicating if the shortcut is pressed
+ */
 export function checkShortcut(string){
-    const keys = string.split("+")
+    const keys = string.split("+")  // Split the string into an array of keys
 
+    // Check if all the keys that should be pressed are pressed
     const allPressed = keys.every(key => {
         if (checkKey(key)) return true
     })
 
+    // If not all the keys are pressed, return false
     if (!allPressed) return false
 
-    // Check if only the keys in the shortcut are pressed
-    const validKeys = keys.map(key => getKeyFormAliases(key)).flat()
+    // Check if the only keys pressed are the keys of the shortcut
+    const validKeys = keys.map(key => getKeysFromAlias(key)).flat()  // Generate a list of keys that are valid/allowed
+    // Iterate over all the keys
     for (const key in window.cvs.keysDown){
-        const isPressed = window.cvs.keysDown[key]
-        const includes = validKeys.includes(key)
-        if (!includes && isPressed) return false
+        const isPressed = window.cvs.keysDown[key] // Check if the key is pressed
+        const includes = validKeys.includes(key)   // Check if the key is part of the valid keys list
+        if (!includes && isPressed) return false   // If the key is not part of the valid keys list, and it is pressed, return false
     }
 
+    // Otherwise,
     return true
 }
 
-export function checkKey(code){
-    const aliases = getKeyFormAliases(code)
-    return aliases.some(alias => window.cvs.keysDown[alias])
+/**
+ * Check if a key is pressed.
+ * 
+ * The key can be a key code, or an alias for a group of keys.
+ * 
+ * @See {@link getKeysFromAlias} for the list of aliases.
+ * 
+ * @param {String} aliasOrKey The key code or alias to be checked
+ * @returns Boolean indicating if the key is pressed
+ */
+export function checkKey(aliasOrKey){
+    const keys = getKeysFromAlias(aliasOrKey)  // Get the list of aliases associated with the key
+    return keys.some(key => window.cvs.keysDown[key])  // Check if any of the aliases are pressed
 }
 
-export function getKeyFormAliases(code){
-    // Is digit
+
+/**
+ * Get the list of keys associated with an alias.
+ * 
+ * The aliases are:
+ * - "Control" for both left and right control keys.
+ * - "Alt" for both left and right alt keys.
+ * - "Shift" for both left and right shift keys.
+ * - "Meta" for both left and right meta keys.
+ * - "Arrow" for the arrow keys (Up, Down, Left, Right).
+ * 
+ * @param {String} code The alias to be checked
+ * @returns Array of key codes associated with the alias
+ */
+export function getKeysFromAlias(code){
+    // Is digit: (1) -> [Digit1, Numpad1]
     if (code.match(/^\d$/)) return ["Digit"+code, "Numpad"+code]
 
-    // Is letter
+    // Is letter: (a) -> [KeyA]
     if (code.match(/^[a-z]$/i)) return ["Key"+code.toUpperCase()]
 
     // Is special key
@@ -47,6 +85,13 @@ export function getKeyFormAliases(code){
     }
 }
 
+/**
+ * Check if any special key is pressed.
+ * 
+ * Special keys are: Control, Alt, Shift, and Meta.
+ * 
+ * @returns Boolean indicating if any special key is pressed
+ */
 export function anySpecialKeyPressed(){
     if (window.cvs.keysDown["ControlLeft"] || window.cvs.keysDown["ControlRight"]) return true
     if (window.cvs.keysDown["AltLeft"] || window.cvs.keysDown["AltRight"]) return true
