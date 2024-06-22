@@ -14,8 +14,8 @@ export function resetPan(){
  * Returns true if the user has the panning keys pressed.
  * 
  * The panning action can be triggered by any of the following:
- * - Holding the pan key (Space+LeftMouseButton)
- * - Holding the pan mouse button (Middle mouse button)
+ * - Holding the pan key (shortcut defined in constants.PAN_KEY)
+ * - Holding the pan mouse button (defined in constants.PAN_MOUSE_BUTTON)
  * 
  * @returns {boolean} Whether the user is panning elements in the canvas.
  */
@@ -36,9 +36,12 @@ export function isPanning(){
  * @param {number} dy The offset in the y-axis.
  */
 export function panBy(dx, dy){
+    // Move the canvas
     window.ctx.translate(dx, dy)
+    // Update the pan offset global variable
     window.cvs.canvasPanOffset.x -= dx
     window.cvs.canvasPanOffset.y -= dy
+    // Update the mouse coordinates
     window.cvs.x -= dx
     window.cvs.y -= dy
 }
