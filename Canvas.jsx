@@ -1,7 +1,7 @@
 import { useLayoutEffect } from "react"
 import constants from "./utils/constants"
 import { zoomIn, zoomOut } from "./utils/zoom"
-import { isPanning, panBy } from "./utils/pan"
+import { isPanKeysPressed, isPanning, panBy, startPanning, stopPanning } from "./utils/pan"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -71,8 +71,8 @@ export default function Canvas() {
         }
 
         // --- Default actions ---
-        if (isPanning()) {  // Check if the pan key is pressed
-            document.body.style.cursor = "grabbing"
+        if (isPanKeysPressed()) {  // Check if the pan key is pressed
+            startPanning()
             return // Prevent further actions
         }
         
@@ -104,12 +104,13 @@ export default function Canvas() {
 
         // --- Default actions ---
         if (window.cvs.keysDown[constants.PAN_KEY]) {  // Check if the pan key is still pressed 
+            stopPanning()
             document.body.style.cursor = "grab"
             return // Prevent further actions
         }
         // Release the pan key
         if (button === 1) { // Middle mouse button (usually the mouse button for panning)
-            document.body.style.cursor = "default"
+            stopPanning()
             return // Prevent further actions
         }
 
@@ -149,7 +150,7 @@ export default function Canvas() {
         // --- Default shortcuts ---
         if (code === constants.PAN_KEY) { // The pan key is pressed
             // Change the cursor to the grab cursor to indicate that the canvas can be panned, but only if the mouse is not already dragging an element
-            if (document.body.style.cursor !== "grabbing") document.body.style.cursor = "grab"
+            if (!window.cvs.panning) document.body.style.cursor = "grab"
             return // Prevent further actions
         }
 
@@ -172,7 +173,7 @@ export default function Canvas() {
 
         // --- Default shortcuts ---
         if (code === constants.PAN_KEY) { // The pan key is released
-            document.body.style.cursor = "default"
+            stopPanning()
             return // Prevent further actions
         }
 
@@ -207,6 +208,10 @@ export default function Canvas() {
         window.addEventListener('resize', handleResize)
         window.addEventListener('keydown', handleKeyDown)
         window.addEventListener('keyup', handleKeyUp)
+
+        window.addEventListener('mouseup', () => {
+            window.cvs.mouseDown = null
+        })
 
         return () => {
             // Remove the event listeners

@@ -102,6 +102,7 @@ export default function setupGlobals($canvas, ctx, debug = false) {
 
         // Pan the canvas
         canvasPanOffset: { x: 0, y: 0 }, // Coordinates of the canvas show at the top-left corner of the canvas
+        panning: false, // Flag to indicate if the user is panning the canvas
 
         // Zoom
         zoom: 1, // Zoom factor

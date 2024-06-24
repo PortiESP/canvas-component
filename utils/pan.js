@@ -20,9 +20,7 @@ export function resetPan(){
  * @returns {boolean} Whether the user is panning elements in the canvas.
  */
 export function isPanning(){
-    const option1 = window.cvs.keysDown[constants.PAN_KEY] && window.cvs.mouseDown === 0
-    const option2 = window.cvs.mouseDown === constants.PAN_MOUSE_BUTTON
-    return option1 || option2
+    return window.cvs.panning
 }
 
 /**
@@ -59,4 +57,23 @@ export function panBy(dx, dy){
 export function panTo(x, y){
     const {x: currentX, y: currentY} = getViewBox()
     panBy(currentX - x, currentY - y)
+}
+
+
+export function startPanning(){
+    document.body.style.cursor = "grabbing"
+    window.cvs.panning = true
+}
+
+
+export function stopPanning(){
+    document.body.style.cursor = "default"
+    window.cvs.panning = false
+}
+
+
+export function isPanKeysPressed(){
+    const option1 = window.cvs.keysDown[constants.PAN_KEY] && window.cvs.mouseDown === 0
+    const option2 = window.cvs.mouseDown === constants.PAN_MOUSE_BUTTON
+    return option1 || option2
 }
