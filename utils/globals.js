@@ -1,6 +1,6 @@
 
 import constants from "./constants"
-import { resetZoom } from "../../canvas/utils/zoom"
+import { getViewBox, resetZoom } from "../../canvas/utils/zoom"
 
 /**
  * 
@@ -27,7 +27,6 @@ import { resetZoom } from "../../canvas/utils/zoom"
  *          - CANVAS
  *              - `ctx`: The canvas 2D context
  *              - `$canvas`: The canvas element
- *              - `canvasBoundingBox`: The bounding box of the canvas element
  *              - `canvasPanOffset`: An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
  *              - `zoom`: The zoom factor
  *              - `zoomLevel`: The zoom level (index of the zoom factor in the zoom levels array at the constants file)
@@ -77,8 +76,6 @@ export class Canvas{
         // Mouse coordinates in the canvas
         this.x = 0
         this.y = 0
-        // Canvas x and y coordinates and dimensions
-        this.canvasBoundingBox = $canvas.getBoundingClientRect()
         // Mouse state
         this.mouseDown = null // Button code of the pressed mouse button, if any (null otherwise)
         this.mouseMoveCallback = null
@@ -110,5 +107,10 @@ export class Canvas{
         this.zoom = 1 // Zoom factor
         this.zoomLevel = constants.ZOOM_LEVELS.indexOf(1) // Zoom level (index of the zoom factor in the zoom levels array at the constants file)
     
+    }
+
+
+    getVB(){
+        return getViewBox()
     }
 }

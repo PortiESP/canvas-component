@@ -1,7 +1,7 @@
 import { useLayoutEffect } from "react"
 import constants from "./utils/constants"
-import { zoomIn, zoomOut } from "./utils/zoom"
-import { isPanKeysPressed, isPanning, panBy, startPanning, stopPanning } from "./utils/pan"
+import { resetZoom, zoomIn, zoomOut } from "./utils/zoom"
+import { isPanKeysPressed, isPanning, panBy, resetPan, startPanning, stopPanning } from "./utils/pan"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -187,8 +187,11 @@ export default function Canvas() {
         // --- Debug mode ---
         if (window.cvs.debug) console.log('Resized:', e)
 
+            
         // --- Default actions ---
         if (window.cvs.autoResize){ // Auto resize the canvas, if enabled
+            resetPan()  // Reset the canvas pan
+            resetZoom() // Reset the zoom level
             const $canvas = window.cvs.$canvas
             const parent = $canvas.parentElement.getBoundingClientRect()
             $canvas.width = parent.width
