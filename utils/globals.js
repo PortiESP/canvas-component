@@ -1,6 +1,6 @@
 
 import constants from "./constants"
-import { getViewBox, resetZoom } from "../../canvas/utils/zoom"
+import { getViewBox, resetZoom } from "./zoom"
 
 /**
  * 
