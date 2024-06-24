@@ -47,16 +47,20 @@ import { resetZoom } from "../../canvas/utils/zoom"
  * @param {CanvasRenderingContext2D} ctx Canvas 2D context (retrieved from the canvas element using `.getContext('2d')`)
  */
 export default function setupGlobals($canvas, ctx, debug = false) {
-    // Define the global variables initial values
-
     // Canvas context
     window.ctx = ctx
     // Canvas data
-    window.cvs = {
+    window.cvs = new Canvas($canvas, ctx, debug)
+}
+
+
+export class Canvas{
+    constructor($canvas, ctx, debug = false){
+
         // --- Debug mode ---
-        debug,
-        debugData: undefined, // Function to that returns an array of strings to be printed on the canvas
-        debugCommands: [
+        this.debug = debug // Flag to indicate if the debug mode is enabled
+        this.debugData = undefined // Function to that returns an array of strings to be printed on the canvas
+        this.debugCommands = [
             {
                 label: 'Close debug mode',
                 callback: () => window.cvs.debug = false
@@ -66,46 +70,45 @@ export default function setupGlobals($canvas, ctx, debug = false) {
                 callback: () => resetZoom()
             }
         ],
-        debugCommandHover: null,
-        debugFunctions: {},
+        this.debugCommandHover = null
+        this.debugFunctions = {}
 
+        // --- Mouse & Keyboard ---
         // Mouse coordinates in the canvas
-        x: 0,
-        y: 0,
-
+        this.x = 0
+        this.y = 0
         // Canvas x and y coordinates and dimensions
-        canvasBoundingBox: $canvas.getBoundingClientRect(),
-
+        this.canvasBoundingBox = $canvas.getBoundingClientRect()
         // Mouse state
-        mouseDown: null, // Button code of the pressed mouse button, if any (null otherwise)
-        mouseMoveCallback: null,
-        mouseUpCallback: null,
-        mouseDownCallback: null,
-        mouseScrollCallback: null,
-        lastMouseDown: 0, // Timestamp of the last mouse down event (used to detect double clicks)
-        doubleClick: false, // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
-        draggingOrigin: null, // Coordinates of the origin of the dragging action
-
+        this.mouseDown = null // Button code of the pressed mouse button, if any (null otherwise)
+        this.mouseMoveCallback = null
+        this.mouseUpCallback = null
+        this.mouseDownCallback = null
+        this.mouseScrollCallback = null
+        this.lastMouseDown = 0 // Timestamp of the last mouse down event (used to detect double clicks)
+        this.doubleClick = false // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
+        this.draggingOrigin = null // Coordinates of the origin of the dragging action
         // Keyboard state
-        key: null, // The key code of the last pressed key, if any (null otherwise)
-        keysDown: {}, // Object to store the state of the keys (true if the key is pressed, false or undefined otherwise)
-        keyDownCallback: null,
-        keyUpCallback: null,
+        this.key = null // The key code of the last pressed key, if any (null otherwise)
+        this.keysDown = {} // Object to store the state of the keys (true if the key is pressed, false or undefined otherwise)
+        this.keyDownCallback = null
+        this.keyUpCallback = null
 
+        // --- Canvas ---
         // Resize 
-        resizeCallback: null,
-        autoResize: false,
-
+        this.resizeCallback = null
+        this.autoResize = false
         // Drawing context
-        ctx: ctx,
-        $canvas: $canvas,
+        this.ctx = ctx
+        this.$canvas = $canvas
 
+        // --- Pan & Zoom ---
         // Pan the canvas
-        canvasPanOffset: { x: 0, y: 0 }, // Coordinates of the canvas show at the top-left corner of the canvas
-        panning: false, // Flag to indicate if the user is panning the canvas
-
+        this.canvasPanOffset = { x: 0, y: 0 } // Coordinates of the canvas show at the top-left corner of the canvas
+        this.panning = false // Flag to indicate if the user is panning the canvas
         // Zoom
-        zoom: 1, // Zoom factor
-        zoomLevel: constants.ZOOM_LEVELS.indexOf(1), // Zoom level (index of the zoom factor in the zoom levels array at the constants file)
+        this.zoom = 1 // Zoom factor
+        this.zoomLevel = constants.ZOOM_LEVELS.indexOf(1) // Zoom level (index of the zoom factor in the zoom levels array at the constants file)
+    
     }
 }
