@@ -1,4 +1,3 @@
-
 import constants from "./constants"
 import { getViewBox, resetZoom } from "./zoom"
 
@@ -62,7 +61,7 @@ export class Canvas{
         this.debugCommands = [
             {
                 label: 'Close debug mode',
-                callback: () => window.cvs.debug = false
+                callback: () => this.debug = false
             },
             {
                 label: 'Reset zoom',
@@ -109,8 +108,108 @@ export class Canvas{
     
     }
 
-
-    getVB(){
-        return getViewBox()
+    
+    
+    /**
+     * Clears the canvas by drawing a rectangle that covers the entire canvas area and an extra margin to avoid artifacts.
+     */
+    clean(){
+        const coords = getViewBox()  // Get the coordinates of the view box
+        const margin = constants.CLEAN_MARGIN  // Margin to clear the canvas and avoid artifacts
+        this.ctx.clearRect(coords.x - margin, coords.y - margin, coords.width + margin * 2, coords.height + margin * 2)
+    }
+    
+    
+    
+    /**
+     * Prints information on the canvas when the debug mode is enabled.
+     * 
+     * @param {Array} data Array of strings to be printed on the canvas along with the default debug information.
+     */
+    drawDebugInfo(data){
+        this.ctx.save()
+        
+        const zoom = this.zoom
+    
+        this.ctx.fillStyle = 'black'
+        this.ctx.font = `${12 / zoom}px Arial`
+        this.ctx.textAlign = 'right'
+    
+        // Default Debug info
+        data = [
+            `(${this.x})  - (${this.y})`,
+            "Zoom: " + this.zoom,
+            "Mouse down: " + this.mouseDown,
+            "Dragging origin: " + (this.draggingOrigin ? `(${this.draggingOrigin.x}) - (${this.draggingOrigin.y})` : "None"),
+            "Key: " + this.key,
+            "Keys down: " + Object.keys(this.keysDown).filter(k => this.keysDown[k]).join('+') || "None",
+            "Double click ready: " + (Date.now() - this.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
+            "Canvas pan offset: (" + this.canvasPanOffset.x + ") - (" + this.canvasPanOffset.y + ")",
+    
+            // Custom debug data
+            ...data
+        ]
+    
+        // Canvas pan offset
+        const panOffsetY = this.canvasPanOffset.y
+        // Coords of the right side of the canvas minus a small margin of 10px
+        const posX = getViewBox().x2 - 10 / zoom
+    
+        // Custom data
+        for (let i = 0; i < data.length; i++) {
+            const lineY = i * 14 / zoom
+            const posY = 20 / zoom + lineY + panOffsetY
+            ctx.fillText(data[i], posX, posY)
+        }
+    
+        // Last line following coordinates
+        const cmdsY = 20 / zoom + data.length * 14 / zoom + panOffsetY
+        const cmdsH = 20 / zoom
+    
+    
+        // Draw debug commands as small buttons
+        let isHover = undefined
+        for (let i = 0; i < this.debugCommands.length; i++) {
+            const command = this.debugCommands[i]
+            const cmdY = cmdsY + i * cmdsH * 1.2
+            const textW = ctx.measureText(command.label).width
+    
+            // Draw the command label
+            ctx.fillStyle = 'black'
+            ctx.textAlign = "right"
+            ctx.fillText(command.label, posX, cmdY + 12 / zoom)
+    
+            const btnX1 = posX - textW - 5 / zoom
+            const btnX2 = posX + 5 / zoom
+            const btnY1 = cmdY
+            const btnY2 = cmdY + cmdsH
+    
+            // Draw the command button
+            ctx.strokeStyle = 'black'
+            ctx.fillStyle = '#8888'
+            ctx.fillRect(btnX1, btnY1, textW + 10 / zoom, cmdsH)
+    
+            // Hover
+            if (this.x > posX - textW - 5 / zoom && this.x < posX + 5 / zoom && this.y > cmdY && this.y < cmdY + cmdsH) {
+                ctx.fillStyle = '#fff2'
+                ctx.fillRect(posX - textW - 5 / zoom, cmdY, textW + 10 / zoom, cmdsH)
+                isHover = command
+            }
+        }
+    
+        // Hover
+        if (isHover) {
+            this.debugCommandHover = isHover
+        } else {
+            this.debugCommandHover = null
+        }
+    
+        // Custom funcs
+        for (let f in this.debugFunctions) {
+            this.debugFunctions[f]()
+        }
+    
+        // Reset the style
+        this.ctx.restore()
     }
 }

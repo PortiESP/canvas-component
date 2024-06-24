@@ -1,4 +1,3 @@
-import { clean } from "./canvas_utils"
 import setupGlobals from "./globals"
 
 /**
@@ -42,7 +41,7 @@ export function mainLoop (callback){
     // =========== Main drawing loop ===========
     const loop = () => {
         // Clean the canvas
-        clean()
+        window.cvs.clean()
 
         // Draw all nodes
         callback()
