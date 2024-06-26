@@ -136,7 +136,7 @@ export default function Canvas() {
     // --- Keyboard Events ---
 
     const handleKeyDown = (e) => {
-        e.preventDefault()
+        // e.preventDefault()
 
         const code = e.code
 
@@ -207,6 +207,7 @@ export default function Canvas() {
     // The following event listeners weren't added using JSX because the canvas element didn't allow to define the event listeners in the JSX code, 
     // So it was necessary to add the event listeners in the useLayoutEffect hook.
     useLayoutEffect(() => {
+        
         // Add the event listeners
         window.addEventListener('resize', handleResize)
         window.addEventListener('keydown', handleKeyDown)
