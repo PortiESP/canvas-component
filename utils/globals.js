@@ -83,6 +83,7 @@ export class Canvas{
         this.mouseScrollCallback = null
         this.lastMouseDown = 0 // Timestamp of the last mouse down event (used to detect double clicks)
         this.doubleClick = false // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
+        this.mouseDoubleClickCallback = null
         this.draggingOrigin = null // Coordinates of the origin of the dragging action
         // Keyboard state
         this.key = null // The key code of the last pressed key, if any (null otherwise)
