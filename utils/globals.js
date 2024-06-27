@@ -28,7 +28,6 @@ import { getViewBox, resetZoom } from "./zoom"
  *              - `$canvas`: The canvas element
  *              - `canvasPanOffset`: An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
  *              - `zoom`: The zoom factor
- *              - `zoomLevel`: The zoom level (index of the zoom factor in the zoom levels array at the constants file)
  *          - CONFIG
  *              - `autoResize`: A boolean flag indicating whether the canvas should automatically resize to fit its parent container
  *  
@@ -104,9 +103,18 @@ export class Canvas{
         this.canvasPanOffset = { x: 0, y: 0 } // Coordinates of the canvas show at the top-left corner of the canvas
         this.panning = false // Flag to indicate if the user is panning the canvas
         // Zoom
-        this.zoom = 1 // Zoom factor
-        this.zoomLevel = constants.ZOOM_LEVELS.indexOf(1) // Zoom level (index of the zoom factor in the zoom levels array at the constants file)
+        this._zoom = 1 // Zoom factor
     
+    }
+
+    // --- Getters & Setters ---
+    get zoom(){
+        return this._zoom
+    }
+
+    set zoom(value){
+        this._zoom = value
+        if (window.setZoom) window.setZoom(value)
     }
 
     
