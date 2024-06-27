@@ -51,6 +51,7 @@ export default function Canvas() {
 
     const handleMouseDown = (e) => {
         e.preventDefault()
+        window.cvs.$canvas.focus()
 
         const button = e.button
 
@@ -207,21 +208,29 @@ export default function Canvas() {
     // The following event listeners weren't added using JSX because the canvas element didn't allow to define the event listeners in the JSX code, 
     // So it was necessary to add the event listeners in the useLayoutEffect hook.
     useLayoutEffect(() => {
-        
-        // Add the event listeners
-        window.addEventListener('resize', handleResize)
-        window.addEventListener('keydown', handleKeyDown)
-        window.addEventListener('keyup', handleKeyUp)
+        const $canvas = window.cvs?.$canvas
+        if (!$canvas) return
 
-        window.addEventListener('mouseup', () => {
+        $canvas.tabIndex = 1000
+        $canvas.autofocus = true
+        $canvas.style.outline = 'none'
+        $canvas.focus()
+
+
+        // Add the event listeners
+        $canvas.addEventListener('resize', handleResize)
+        $canvas.addEventListener('keydown', handleKeyDown)
+        $canvas.addEventListener('keyup', handleKeyUp)
+
+        $canvas.addEventListener('mouseup', () => {
             window.cvs.mouseDown = null
         })
 
         return () => {
             // Remove the event listeners
-            window.removeEventListener('resize', handleResize)
-            window.removeEventListener('keydown', handleKeyDown)
-            window.removeEventListener('keyup', handleKeyUp)
+            $canvas.removeEventListener('resize', handleResize)
+            $canvas.removeEventListener('keydown', handleKeyDown)
+            $canvas.removeEventListener('keyup', handleKeyUp)
         }
     }, [])
 
