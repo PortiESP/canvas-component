@@ -57,35 +57,41 @@ export default function Canvas() {
 
         // Store the mouse down button
         window.cvs.mouseDown = button
-        // Store the coordinates of the mouse at the moment of the mouse down event (just in case the user wants to drag the canvas)
-        window.cvs.draggingOrigin = {x: window.cvs.x, y: window.cvs.y}
-
+        
         // --- Debug mode ---
         if (window.cvs.debug) {
             console.log('Mouse down:', button)
-
+            
             // Check if any debug command was triggered
             if (button === 0 && window.cvs.debugCommandHover){
                 window.cvs.debugCommandHover.callback()
                 return
             }
         }
-
+        
         // --- Default actions ---
         if (isPanKeysPressed()) {  // Check if the pan key is pressed
             startPanning()
             return // Prevent further actions
         }
         
-        // --- Callbacks ---
-        // Check double click
-        if (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY) {
-            window.cvs.lastMouseDown = Date.now()
-            window.cvs.doubleClick = true
-            if (window.cvs.mouseDoubleClickCallback) window.cvs.mouseDoubleClickCallback(button, {x: window.cvs.x, y: window.cvs.y})
-            return 
-        } else window.cvs.lastMouseDown = Date.now()
+        // Left mouse button
+        if (button === 0) {
+            // Store the coordinates of the mouse at the moment of the mouse down event (just in case the user wants to drag the canvas)
+            window.cvs.draggingOrigin = {x: window.cvs.x, y: window.cvs.y}
 
+            // Check double click
+            if (Date.now() - window.cvs.lastMouseDown < constants.DOUBLE_CLICK_DELAY) {
+                window.cvs.lastMouseDown = Date.now()
+                window.cvs.doubleClick = true
+                // --- Double click callback ---
+                if (window.cvs.mouseDoubleClickCallback) window.cvs.mouseDoubleClickCallback(button, {x: window.cvs.x, y: window.cvs.y})
+                return 
+            } else window.cvs.lastMouseDown = Date.now()
+        }
+        
+        
+        // --- Callbacks ---
         // Single click
         if (window.cvs.mouseDownCallback) window.cvs.mouseDownCallback(button, {x: window.cvs.x, y: window.cvs.y})
     }
