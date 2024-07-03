@@ -8,7 +8,7 @@ import { handleKeyDown, handleKeyUp, handleMouseDown, handleMouseMove, handleMou
  * 
  * Most of the events will run a default action, like preventing the default behavior of the event, and then call the callback function if it is defined. 
  * The callbacks are defined in the global variables and can be changed at any time. This callback functions as supposed to be defined in `setupCanvas` function as explained in README basic example.
- * @See `setupGlobals` from `utils/globals.js` for more information about the global variables and available callbacks.
+ * @See `GraphGlobals` from `utils/globals.js` for more information about the global variables and available callbacks.
  * 
  * @returns The canvas element using JSX
  */

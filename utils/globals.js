@@ -49,6 +49,8 @@ import { getViewBox, resetZoom } from "./zoom"
  */
 export class CanvasGlobals {
     constructor($canvas, ctx, debug = false) {
+        // Setup the global variable
+        window.cvs = this
 
         // --- Debug mode ---
         this.debug = debug // Flag to indicate if the debug mode is enabled

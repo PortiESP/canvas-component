@@ -24,7 +24,7 @@ export function setupCanvas(debug = false) {
     
     // Setup globals
     window.ctx = ctx
-    window.cvs = new CanvasGlobals($canvas, ctx, debug)
+    new CanvasGlobals($canvas, ctx, debug)
 }
 
 /**
