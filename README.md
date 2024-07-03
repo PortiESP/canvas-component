@@ -60,6 +60,8 @@ function App() {
 export default App
 ```
 
+
+
 ## Code
 
 ### Global variables
@@ -72,29 +74,69 @@ The component uses the `window` object to store the data of the canvas. The foll
 
 Under the `window.cvs` object, the following data is stored:
 
+#### DEBUG MODE
+
 Property | Description
 --- | ---
-`debug` | Boolean. If true, the canvas will display debug information and print debug messages to the console.
-`x` | Number. The x position of cursor in canvas coordinates.
-`y` | Number. The y position of cursor in canvas coordinates.
-`mouseDown` | Number. If a mouse button is pressed, this property will contain the button code. Otherwise, it will be null.
-`lastMouseDown` | Number. The timestamp of the last mouse down event (used to detect double clicks).
-`key` | Number. If a keyboard key is pressed, this property will contain the key code. Otherwise, it will be null. (e.g. "KeyA" for the "A" key).
-`keysDown` | Object. A map of key codes to boolean values indicating whether the key is currently pressed. If the key appears as true, it is pressed. If it appears as false or undefined, it is not pressed.
-`autoResize` | Boolean. If true, the canvas will automatically resize to fit its parent container.
-`ctx` | Object. The 2D rendering context of the canvas.
-`$canvas` | Object. The canvas HTML element.
+`debug` | Boolean. Indicates if debug mode is enabled
+`debugData` | Function. Returns an array of strings for debug info
+`debugCommands` | Array. Contains objects with label and callback for debug buttons
+`debugCommandHover` | The command being hovered by the mouse
+`debugFunctions` | Object. Contains functions for custom debug drawings
 
-Callbacks | Description
+#### MOUSE & KEYBOARD
+
+Property | Description
 --- | ---
-`mouseDownCallback` | Function. A callback function that is called when a mouse button is pressed. Params: (`button`, `{x, y}`). The `button` parameter is the button code (Number) of the pressed mouse button. The `{x, y}` parameter is the position of the cursor in canvas coordinates at the time of the event.
-`mouseUpCallback` | Function. A callback function that is called when a mouse button is released. Params: (`button`, `{x, y}`). The `button` parameter is the button code (Number) of the released mouse button. The `{x, y}` parameter is the position of the cursor in canvas coordinates at the time of the event.
-`mouseMoveCallback` | Function. A callback function that is called when the mouse is moved. Params: (`{x, y}`). The `{x, y}` parameter is the position of the cursor in canvas coordinates at the time of the event.
-`keyDownCallback` | Function. A callback function that is called when a keyboard key is pressed. Params: (`key`). The `key` parameter is the key code (String) of the pressed key.
-`keyUpCallback` | Function. A callback function that is called when a keyboard key is released. Params: (`key`). The `key` parameter is the key code (String) of the released key.
-`resizeCallback` | Function. A callback function that is called when the canvas is resized. Params: (`{width, height}`). The `{width, height}` parameter is the new size of the canvas in pixels.
+`x` | Number. The x coordinate of the mouse cursor (relative to canvas)
+`y` | Number. The y coordinate of the mouse cursor (relative to canvas)
+`mouseDown` | Number. The button code of the pressed mouse button (null if none)
+`lastMouseDown` | Number. Timestamp of the last mouse down event
+`doubleClick` | Boolean. Indicates if a double click event was detected
+`draggingOrigin` | Object. Coordinates of the mouse at the start of dragging
+`key` | Number/String. The key code of the pressed key (null if none)
+`keysDown` | Object. Stores the state of keys
 
-## Add support for new canvas DOM events
+#### CANVAS
+
+Property | Description
+--- | ---
+`ctx` | The canvas 2D context (repeated for emphasis)
+`$canvas` | The canvas HTML element
+`canvasPanOffset` | Object. Coordinates of the canvas's top-left corner
+`panning` | Boolean. Indicates if the user is panning the canvas
+`zoom` | Number. The zoom factor
+
+#### CONFIG
+
+Property | Description
+--- | ---
+`autoResize` | Boolean. Indicates if the canvas auto-resizes to fit its container
+
+#### Callbacks
+
+Callback | Description
+--- | ---
+`mouseMoveCallback(e, {x, y})` | Function. Called when the mouse is moved
+`mouseDownCallback(button, {x, y})` | Function. Called when a mouse button is pressed
+`mouseUpCallback(button, {x, y})` | Function. Called when a mouse button is released
+`mouseScrollCallback(deltaY, {x, y})` | Function. Called when the mouse wheel is scrolled
+`keyDownCallback(key, {x, y})` | Function. Called when a key is pressed
+`keyUpCallback(key, {x, y})` | Function. Called when a key is released
+`resizeCallback(e)` | Function. Called when the window is resized
+
+### Debug mode
+
+The canvas component has a debug mode that can be enabled by setting the `window.cvs.debug` variable to `true`. When debug mode is enabled, the canvas will display debug information and buttons that can be used to trigger custom debug functions.
+
+Debug properties:
+- `debug` (Boolean): Indicates if debug mode is enabled
+- `debugData` (Function): Returns an array of strings for debug info. This function is called every frame at the moment of drawing the debug info.
+- `debugCommands` (Array): Contains objects with `label` and `callback` for debug buttons that will be displayed below the debug info returned by the `debugData` function and that the user can click to trigger the callback function.
+- `debugCommandHover` (String): The command being (from the `debugCommands` array) hovered by the mouse. This property is used by the `drawDebugInfo` function to highlight the hovered command and to trigger the callback function when the user clicks on the command.
+- `debugFunctions` (Object): Contains functions for custom debug drawings. The functions are called every frame after the debug info is drawn. This object is used to draw custom debug information that is not covered by the `debugData` function (since the `debugData` function is used to draw general debug info as a list of strings, but can't cover drawing additional visual information such as shapes). 
+
+### Add support for new canvas DOM events
 
 To add support for new canvas DOM events:
 1. Create a the handler function in the `Canvas` component (path: `/Canvas.jsx`)
