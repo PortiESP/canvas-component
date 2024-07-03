@@ -60,18 +60,34 @@ export function panTo(x, y){
 }
 
 
+
+/**
+ * Start panning the canvas.
+ * 
+ * This function should be called when the user has pressed the pan key or the pan mouse button.
+ */
 export function startPanning(){
     document.body.style.cursor = "grabbing"
     window.cvs.panning = true
 }
 
 
+/**
+ * Stop panning the canvas.
+ * 
+ * This function should be called when the user has released the pan key or the pan mouse button.
+ */
 export function stopPanning(){
     document.body.style.cursor = "default"
     window.cvs.panning = false
 }
 
 
+/**
+ * Check if the pan shortcut is pressed.
+ * 
+ * @returns {boolean} Whether the pan shortcut is pressed.
+ */
 export function isPanKeysPressed(){
     const option1 = window.cvs.keysDown[constants.PAN_KEY] && window.cvs.mouseDown === 0
     const option2 = window.cvs.mouseDown === constants.PAN_MOUSE_BUTTON

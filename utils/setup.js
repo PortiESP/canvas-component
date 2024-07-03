@@ -12,7 +12,7 @@ import { CanvasGlobals } from "./globals"
  * @param {Function} callback The function to be called after the canvas is ready
  * @param {Boolean} debug Whether to enable the debug mode or not
  */
-export function setupCanvas(callback, debug = false) {
+export function setupCanvas(debug = false) {
     // Setup canvas
     const $canvas = document.getElementById('canvas')
     const ctx = $canvas.getContext('2d')
@@ -25,9 +25,6 @@ export function setupCanvas(callback, debug = false) {
     // Setup globals
     window.ctx = ctx
     window.cvs = new CanvasGlobals($canvas, ctx, debug)
-
-    // Call the callback function
-    callback()
 }
 
 /**

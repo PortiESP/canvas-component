@@ -70,18 +70,12 @@ export function getKeysFromAlias(code){
 
     // Is special key
     switch(code.toLowerCase()){
-        case "control":
-            return ["ControlLeft", "ControlRight"]
-        case "alt":
-            return ["AltLeft", "AltRight"]
-        case "shift":
-            return ["ShiftLeft", "ShiftRight"]
-        case "meta":
-            return ["MetaLeft", "MetaRight"]
-        case "arrow":
-            return ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]
-        default:
-            return [code]
+        case "control": return ["ControlLeft", "ControlRight"]
+        case "alt": return ["AltLeft", "AltRight"]
+        case "shift": return ["ShiftLeft", "ShiftRight"]
+        case "meta": return ["MetaLeft", "MetaRight"]
+        case "arrow": return ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]
+        default: return [code]
     }
 }
 
