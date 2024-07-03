@@ -42,16 +42,9 @@ import { getViewBox, resetZoom } from "./zoom"
  * 
  * @param {HTMLElement} $canvas Canvas element in the DOM
  * @param {CanvasRenderingContext2D} ctx Canvas 2D context (retrieved from the canvas element using `.getContext('2d')`)
+ * @param {Boolean} debug Flag to indicate if the debug mode is enabled
  */
-export default function setupGlobals($canvas, ctx, debug = false) {
-    // Canvas context
-    window.ctx = ctx
-    // Canvas data
-    window.cvs = new Canvas($canvas, ctx, debug)
-}
-
-
-export class Canvas{
+export class CanvasGlobals{
     constructor($canvas, ctx, debug = false){
 
         // --- Debug mode ---

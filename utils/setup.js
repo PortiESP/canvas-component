@@ -1,4 +1,4 @@
-import setupGlobals from "./globals"
+import { CanvasGlobals } from "./globals"
 
 /**
  * Setup the initial configuration of the canvas and the global variables
@@ -23,7 +23,8 @@ export function setupCanvas(callback, debug = false) {
     $canvas.height = parent.height
     
     // Setup globals
-    setupGlobals($canvas, ctx, debug)
+    window.ctx = ctx
+    window.cvs = new CanvasGlobals($canvas, ctx, debug)
 
     // Call the callback function
     callback()
