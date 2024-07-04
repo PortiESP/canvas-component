@@ -143,3 +143,18 @@ export function zoomToFit(toWidth, toHeight){
     // Apply the zoom
     zoomBy(zoomFactor)
 }
+
+
+/**
+ * Zooms at the center of the canvas.
+ */
+export function zoomCenterBy(zoomFactor){
+   
+    const {width, height} = getViewBox()
+    zoomBy(zoomFactor)
+    const {width: newWidth, height: newHeight} = getViewBox()
+
+    const dw = (newWidth - width)/2
+    const dh = (newHeight - height)/2
+    panBy(dw, dh)
+}
