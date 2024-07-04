@@ -3,7 +3,7 @@ import { resetZoom, zoomIn, zoomOut } from "./zoom"
 import { isPanKeysPressed, isPanning, panBy, resetPan, startPanning, stopPanning } from "./pan"
 
 // --- Export all ---
-export { handleMouseMove, handleMouseDown, handleMouseUp, handleScroll, handleKeyDown, handleKeyUp, handleResize }
+export { handleMouseMove, handleMouseDown, handleMouseUp, handleScroll, handleKeyDown, handleKeyUp, handleResize, handleBlur, handleFocus }
 
 // --- Mouse Events ---
 const handleMouseMove = (e) => {
@@ -21,13 +21,13 @@ const handleMouseMove = (e) => {
     window.cvs.y = pointerY / window.cvs.zoom + panOffsetY
 
     // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
-    e.movementX /= window.cvs.zoom
-    e.movementY /= window.cvs.zoom
+    e.despX = e.movementX / window.cvs.zoom
+    e.despY = e.movementY / window.cvs.zoom
 
     // --- Default actions ---
     // Pan the canvas
     if (isPanning()) {  // Check if the pan key is pressed
-        panBy(e.movementX, e.movementY)
+        panBy(e.despX, e.despY)
         return  // Prevent further actions
     }
 
@@ -85,7 +85,7 @@ const handleMouseDown = (e) => {
 
 
 const handleMouseUp = (e) => {
-    e.preventDefault()
+    // e.preventDefault()
 
     const button = e.button
 
@@ -201,4 +201,33 @@ const handleResize = (e) => {
 
     // --- Callbacks ---
     if (window.cvs.resizeCallback) window.cvs.resizeCallback(e)
+}
+
+// --- Focus & Blur ---
+const handleFocus = (e) => {
+    if (window.cvs.debug) console.log("event focus", e)
+
+    // --- Callbacks ---
+    if (window.cvs.focusCallback) window.cvs.focusCallback(e)
+}
+
+const handleBlur = (e) => {
+    if (window.cvs.debug) console.log("event blur", e)
+
+    // Trigger the key up event for all keys
+    for (const key in window.cvs.keysDown) {
+        const event = new Event('mouseup')
+        event.code = key
+        if (window.cvs.keysDown[key]) handleKeyUp(event)
+    }
+
+    // Trigger the mouse up event for all mouse buttons
+    if (window.cvs.mouseDown) {
+        const event = new Event('mouseup')
+        event.button = window.cvs.mouse
+        handleMouseUp(event)
+    }
+
+    // --- Callbacks ---
+    if (window.cvs.blurCallback) window.cvs.blurCallback(e)
 }

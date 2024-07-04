@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react"
-import { handleKeyDown, handleKeyUp, handleMouseDown, handleMouseMove, handleMouseUp, handleResize, handleScroll } from "./utils/event-handlers"
+import { handleBlur, handleFocus, handleKeyDown, handleKeyUp, handleMouseDown, handleMouseMove, handleMouseUp, handleResize, handleScroll } from "./utils/event-handlers"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -27,29 +27,31 @@ export default function Canvas() {
         $canvas.style.outline = 'none'
         $canvas.focus()
 
-
         // Add the event listeners
         $canvas.addEventListener('resize', handleResize)
         $canvas.addEventListener('keydown', handleKeyDown)
         $canvas.addEventListener('keyup', handleKeyUp)
 
-        $canvas.addEventListener('mouseup', () => {
-            window.cvs.mouseDown = null
-        })
+        document.addEventListener('mousemove', handleMouseMove)
+
 
         return () => {
             // Remove the event listeners
             $canvas.removeEventListener('resize', handleResize)
             $canvas.removeEventListener('keydown', handleKeyDown)
             $canvas.removeEventListener('keyup', handleKeyUp)
+
+            document.removeEventListener('mousemove', handleMouseMove)
         }
     }, [])
 
     return <canvas id='canvas' 
-                onMouseMove={handleMouseMove} 
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onWheel={handleScroll}
+
+                onFocus={handleFocus}
+                onBlur={handleBlur}
 
                 onContextMenu={(e) => e.preventDefault()}  // Disable the browser context menu
 

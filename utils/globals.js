@@ -116,6 +116,9 @@ export class CanvasGlobals {
     }
 
 
+    
+
+
     /**
      * Prints information on the canvas when the debug mode is enabled.
      * 
