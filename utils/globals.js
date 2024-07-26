@@ -127,7 +127,7 @@ export class CanvasGlobals {
     drawDebugInfo(data) {
         this.ctx.save()
 
-        const menuPos = { x: 100, y: 100 }
+        const menuPos = { x: 300, y: 50 }
 
         const zoom = this.zoom
 
