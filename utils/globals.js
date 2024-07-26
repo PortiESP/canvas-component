@@ -127,6 +127,8 @@ export class CanvasGlobals {
     drawDebugInfo(data) {
         this.ctx.save()
 
+        const menuPos = { x: 100, y: 100 }
+
         const zoom = this.zoom
 
         this.ctx.fillStyle = 'black'
@@ -152,17 +154,17 @@ export class CanvasGlobals {
         // Canvas pan offset
         const panOffsetY = this.canvasPanOffset.y
         // Coords of the right side of the canvas minus a small margin of 10px
-        const posX = getViewBox().x2 - 10 / zoom
+        const posX = getViewBox().x2 - menuPos.x / zoom
 
         // Custom data
         for (let i = 0; i < data.length; i++) {
             const lineY = i * 14 / zoom
-            const posY = 20 / zoom + lineY + panOffsetY
+            const posY = menuPos.y / zoom + lineY + panOffsetY
             ctx.fillText(data[i], posX, posY)
         }
 
         // Last line following coordinates
-        const cmdsY = 20 / zoom + data.length * 14 / zoom + panOffsetY
+        const cmdsY = menuPos.y / zoom + data.length * 14 / zoom + panOffsetY
         const cmdsH = 20 / zoom
 
 
