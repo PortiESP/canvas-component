@@ -264,6 +264,6 @@ export class CanvasGlobals {
 
     set zoom(value) {
         this._zoom = value
-        if (window.setZoom) window.setZoom(value)
+        if (window.graph.setZoomLabel) window.graph.setZoomLabel(value)
     }
 }
