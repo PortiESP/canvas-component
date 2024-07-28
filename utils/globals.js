@@ -42,10 +42,59 @@ import { getViewBox, resetZoom } from "./zoom"
  *          - `keyDownCallback(key, {x, y})`: A callback function to be executed when a key is pressed
  *          - `keyUpCallback(key, {x, y})`: A callback function to be executed when a key is released
  *          - `resizeCallback(e)`: A callback function to be executed when the window is resized
+ */
+
+
+/**
+ * This class will create global variables and methods that will be used throughout the application.
  * 
- * @param {HTMLElement} $canvas Canvas element in the DOM
- * @param {CanvasRenderingContext2D} ctx Canvas 2D context (retrieved from the canvas element using `.getContext('2d')`)
- * @param {Boolean} debug Flag to indicate if the debug mode is enabled
+ * **Properties**
+ * 
+ * ---
+ * 
+ * **Debug**
+ * @property {Boolean} debug - Flag to indicate if the debug mode is enabled
+ * @property {Function} debugData - Function to that returns an array of strings to be printed on the canvas
+ * @property {Array} debugCommands - An array of objects containing the label and callback function of the debug button to be displayed on the canvas. This way we can add button that trigger a custom function.
+ * @property {Object} debugCommandHover - The command that is being hovered by the mouse
+ * @property {Object} debugFunctions - An object containing functions to be executed when the debug mode is enabled. This is useful to draw custom debug information, not just String but whole canvas drawings like overlays, etc.
+ * 
+ * **Mouse & Keyboard**
+ * @property {Number} x - The x coordinate of the mouse cursor on the canvas (relative to the canvas)
+ * @property {Number} y - The y coordinate of the mouse cursor on the canvas (relative to the canvas)
+ * @property {Number} mouseDown - The button code of the pressed mouse button, if any (null otherwise)
+ * @property {Number} lastMouseDown - The timestamp of the last mouse down event (used to detect double clicks)
+ * @property {Boolean} doubleClick - A boolean flag indicating if a double click event was detected
+ * @property {Object} draggingOrigin - The coordinates of the mouse at the moment the dragging action started
+ * @property {Number} key - The key code of the pressed key, if any (null otherwise)
+ * @property {Object} keysDown - An object to store the state of the keys
+ * 
+ * **Canvas**
+ * @property {Object} ctx - The canvas 2D context
+ * @property {Object} $canvas - The canvas element
+ * @property {Object} canvasPanOffset - An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
+ * @property {Boolean} panning - A boolean flag indicating if the user is panning the canvas
+ * @property {Number} zoom - The zoom factor
+ * 
+ * **Config**
+ * @property {Boolean} autoResize - A boolean flag indicating whether the canvas should automatically resize to fit its parent container
+ * 
+ * **Callbacks**
+ * @property {Function} mouseMoveCallback - A callback function to be executed when the mouse is moved
+ * @property {Function} mouseUpCallback - A callback function to be executed when a mouse button is released
+ * @property {Function} mouseDownCallback - A callback function to be executed when a mouse button is pressed
+ * @property {Function} mouseScrollCallback - A callback function to be executed when the mouse wheel is scrolled
+ * @property {Function} mouseDoubleClickCallback - A callback function to be executed when a mouse button is double clicked
+ * @property {Function} keyDownCallback - A callback function to be executed when a key is pressed
+ * @property {Function} keyUpCallback - A callback function to be executed when a key is released
+ * @property {Function} resizeCallback - A callback function to be executed when the window is resized
+ * 
+ * **Methods**
+ * 
+ * ---
+ * 
+ * @method clean - Clears the canvas by drawing a rectangle that covers the entire canvas area and an extra margin to avoid artifacts.
+ * @method drawDebugInfo - Prints information on the canvas when the debug mode is enabled.
  */
 export class CanvasGlobals {
     constructor($canvas, ctx, debug = false) {
