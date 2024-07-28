@@ -93,3 +93,32 @@ export function anySpecialKeyPressed(){
     if (window.cvs.keysDown["MetaLeft"] || window.cvs.keysDown["MetaRight"]) return true
     return false
 }
+
+
+export function getPressedShortcut(){
+
+    let shortcut = []
+    if (window.cvs.keysDown["ControlLeft"] || window.cvs.keysDown["ControlRight"]) shortcut.push("control")
+    if (window.cvs.keysDown["AltLeft"] || window.cvs.keysDown["Altright"]) shortcut.push("alt")
+    if (window.cvs.keysDown["ShiftLeft"] || window.cvs.keysDown["ShiftRight"]) shortcut.push("shift")
+    if (window.cvs.keysDown["MetaLeft"] || window.cvs.keysDown["MetaRight"]) shortcut.push("meta")
+        
+    const keys = Object.keys(window.cvs.keysDown).sort().filter(key => window.cvs.keysDown[key] && !key.match(/(control|alt|shift|meta)/i)).map(key => getKeyFromCode(key))
+    shortcut = shortcut.concat(keys)
+
+    return shortcut.join("+")
+}
+    
+
+export function getKeyFromCode(code){
+
+    switch(code){
+        case "ControlLeft" || "ControlRight": return "control"
+        case "AltLeft" || "AltRight": return "alt"
+        case "ShiftLeft" || "ShiftRight": return "shift"
+        case "MetaLeft" || "MetaRight": return "meta"
+    }
+
+    const key = code.replace(/(key|digit|numpad)/i, "").toLowerCase()
+    return key
+}
