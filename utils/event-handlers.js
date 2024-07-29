@@ -134,7 +134,7 @@ const handleScroll = (e) => {
 // --- Keyboard Events ---
 
 const handleKeyDown = (e) => {
-    // e.preventDefault()
+    e.preventDefault()
 
     const code = e.code
 
