@@ -264,6 +264,6 @@ export class CanvasGlobals {
 
     set zoom(value) {
         this._zoom = value
-        if (window.ui.setZoomLabel) window.ui.setZoomLabel(value)
+        window.ui.call("setZoomLabel", value)
     }
 }
