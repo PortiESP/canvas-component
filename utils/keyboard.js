@@ -122,3 +122,14 @@ export function getKeyFromCode(code){
     const key = code.replace(/(key|digit|numpad)/i, "").toLowerCase()
     return key
 }
+
+
+export function handleShortcut(SHORTCUTS){
+    const key = getPressedShortcut()
+    const shortcutCallback = SHORTCUTS[key]
+
+    if (shortcutCallback) {
+        if (window.cvs.debug) console.log("Shortcut: ", key)
+        shortcutCallback(key)
+    }
+}
