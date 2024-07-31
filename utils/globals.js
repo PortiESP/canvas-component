@@ -2,50 +2,6 @@ import constants from "./constants"
 import { getViewBox, resetZoom } from "./zoom"
 
 /**
- * 
- * This function will create global variables and methods that will be used throughout the application.
- * 
- * The global variables are:
- * - `ctx`: The canvas 2D context
- * - `cvs`: An object containing the following properties and methods related to the canvas:
- *      - Properties:
- *          - DEBUG MODE
- *              - `debug`: A boolean flag indicating whether the debug mode is enabled
- *              - `debugData`: A function that returns an array of strings to be printed on the canvas as debug info: `() => ["string1", "string2", ...]`
- *              - `debugCommands`: An array of objects containing the label and callback function of the debug button to be displayed on the canvas. This way we can add button that trigger a custom function.
- *              - `debugCommandHover`: The command that is being hovered by the mouse
- *              - `debugFunctions`: An object containing functions to be executed when the debug mode is enabled. This is useful to draw custom debug information, not just String but whole canvas drawings like overlays, etc.
- *          - MOUSE & KEYBOARD
- *              - `x`: The x coordinate of the mouse cursor on the canvas (relative to the canvas)
- *              - `y`: The y coordinate of the mouse cursor on the canvas (relative to the canvas)
- *              - `mouseDown`: The button code of the pressed mouse button, if any (null otherwise)
- *              - `lastMouseDown`: The timestamp of the last mouse down event (used to detect double clicks)
- *              - `doubleClick`: A boolean flag indicating if a double click event was detected
- *              - `draggingOrigin`: The coordinates of the mouse at the moment the dragging action started
- *              - `key`: The key code of the pressed key, if any (null otherwise)
- *              - `keysDown`: An object to store the state of the keys
- *          - CANVAS
- *              - `ctx`: The canvas 2D context
- *              - `$canvas`: The canvas element
- *              - `canvasPanOffset`: An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
- *              - `panning`: A boolean flag indicating if the user is panning the canvas
- *              - `zoom`: The zoom factor
- *          - CONFIG
- *              - `autoResize`: A boolean flag indicating whether the canvas should automatically resize to fit its parent container
- *  
- *     - Callbacks: (this functions receives the following callbacks as arguments: (e, {x, y}), where `e` is the event object and `{x, y}` are the mouse coordinates at the time of the event)
- *          - `mouseMoveCallback(e, {x, y})`: A callback function to be executed when the mouse is moved
- *          - `mouseDownCallback(button, {x, y})`: A callback function to be executed when a mouse button is pressed
- *          - `mouseDoubleClickCallback(button, {x, y})`: A callback function to be executed when a mouse button is double clicked
- *          - `mouseUpCallback(button, {x, y})`: A callback function to be executed when a mouse button is released
- *          - `mouseScrollCallback(deltaY, {x, y})`: A callback function to be executed when the mouse wheel is scrolled
- *          - `keyDownCallback(key, {x, y})`: A callback function to be executed when a key is pressed
- *          - `keyUpCallback(key, {x, y})`: A callback function to be executed when a key is released
- *          - `resizeCallback(e)`: A callback function to be executed when the window is resized
- */
-
-
-/**
  * This class will create global variables and methods that will be used throughout the application.
  * 
  * **Properties**
