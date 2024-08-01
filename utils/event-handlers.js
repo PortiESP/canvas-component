@@ -85,7 +85,6 @@ const handleMouseDown = (e) => {
 
 
 const handleMouseUp = (e) => {
-    // e.preventDefault()
 
     const button = e.button
 
@@ -134,8 +133,6 @@ const handleScroll = (e) => {
 // --- Keyboard Events ---
 
 const handleKeyDown = (e) => {
-    e.preventDefault()
-
     const code = e.code
 
     // --- Debug mode ---
@@ -153,7 +150,9 @@ const handleKeyDown = (e) => {
     }
 
     // --- Callback ---
-    if (window.cvs.keyDownCallback) window.cvs.keyDownCallback(code, { x: window.cvs.x, y: window.cvs.y })
+    if (window.cvs.keyDownCallback) {
+        if (window.cvs.keyDownCallback(code, { x: window.cvs.x, y: window.cvs.y })) e.preventDefault()
+    }
 }
 
 

@@ -131,5 +131,8 @@ export function handleShortcut(SHORTCUTS){
     if (shortcutCallback) {
         if (window.cvs.debug) console.log("Shortcut: ", key)
         shortcutCallback(key)
+        return true
     }
+
+    return false
 }
