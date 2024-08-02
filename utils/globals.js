@@ -143,14 +143,14 @@ export class CanvasGlobals {
         // Debug info
         data = [
             // Default Debug info
-            `(${this.x})  - (${this.y})`,
+            `(${this.x.toFixed(2)})  - (${this.y.toFixed(2)})`,
             "Zoom: " + this.zoom,
             "Mouse down: " + this.mouseDown,
-            "Dragging origin: " + (this.draggingOrigin ? `(${this.draggingOrigin.x}) - (${this.draggingOrigin.y})` : "None"),
+            "Dragging origin: " + (this.draggingOrigin ? `(${this.draggingOrigin.x.toFixed(2)}) - (${this.draggingOrigin.y.toFixed(2)})` : "None"),
             "Key: " + this.key,
             "Keys down: " + Object.keys(this.keysDown).filter(k => this.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - this.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
-            "Canvas pan offset: (" + this.canvasPanOffset.x + ") - (" + this.canvasPanOffset.y + ")",
+            "Canvas pan offset: (" + this.canvasPanOffset.x.toFixed(2) + ") - (" + this.canvasPanOffset.y.toFixed(2) + ")",
 
             // Additional debug info
             ...data
