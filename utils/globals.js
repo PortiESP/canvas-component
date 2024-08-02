@@ -207,6 +207,8 @@ export class CanvasGlobals {
 
         // Call the debug functions
         for (let f in this.debugFunctions) this.debugFunctions[f]()
+        this.debugFunctions = {}	
+        
 
         // Reset the style
         this.ctx.restore()
