@@ -28,6 +28,7 @@ export default function Canvas() {
         $canvas.focus()
 
         // Add the event listeners
+        window.addEventListener('mouseup', handleMouseUp)
         $canvas.addEventListener('resize', handleResize)
         $canvas.addEventListener('keydown', handleKeyDown)
         $canvas.addEventListener('keyup', handleKeyUp)
@@ -37,6 +38,7 @@ export default function Canvas() {
 
         return () => {
             // Remove the event listeners
+            window.removeEventListener('mouseup', handleMouseUp)
             $canvas.removeEventListener('resize', handleResize)
             $canvas.removeEventListener('keydown', handleKeyDown)
             $canvas.removeEventListener('keyup', handleKeyUp)
@@ -47,7 +49,6 @@ export default function Canvas() {
 
     return <canvas id='canvas' 
                 onMouseDown={handleMouseDown}
-                onMouseUp={handleMouseUp}
                 onWheel={handleScroll}
 
                 onFocus={handleFocus}
