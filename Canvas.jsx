@@ -29,7 +29,7 @@ export default function Canvas() {
 
         // Add the event listeners
         window.addEventListener('mouseup', handleMouseUp)
-        $canvas.addEventListener('resize', handleResize)
+        window.addEventListener('resize', handleResize)
         $canvas.addEventListener('keydown', handleKeyDown)
         $canvas.addEventListener('keyup', handleKeyUp)
 
@@ -39,7 +39,7 @@ export default function Canvas() {
         return () => {
             // Remove the event listeners
             window.removeEventListener('mouseup', handleMouseUp)
-            $canvas.removeEventListener('resize', handleResize)
+            window.removeEventListener('resize', handleResize)
             $canvas.removeEventListener('keydown', handleKeyDown)
             $canvas.removeEventListener('keyup', handleKeyUp)
 
