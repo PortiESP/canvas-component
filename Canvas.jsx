@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react"
-import { handleBlur, handleFocus, handleKeyDown, handleKeyUp, handleMouseDown, handleMouseMove, handleMouseUp, handleResize, handleScroll } from "./utils/event-handlers"
+import { handleBlur, handleFocus, handleKeyDown, handleKeyUp, handleMouseDown, handleMouseMove, handleMouseUp, handleResize, handleScroll, handleTouchEnd, handleTouchMove, handleTouchStart } from "./utils/event-handlers"
 
 /**
  * This component represents the canvas element in the DOM. The component will handle the events related to the canvas and will store the values read from the events in the global variables.
@@ -29,26 +29,31 @@ export default function Canvas() {
 
         // Add the event listeners
         window.addEventListener('mouseup', handleMouseUp)
+        window.addEventListener('touchend', handleTouchEnd)
         window.addEventListener('resize', handleResize)
         $canvas.addEventListener('keydown', handleKeyDown)
         $canvas.addEventListener('keyup', handleKeyUp)
 
         document.addEventListener('mousemove', handleMouseMove)
+        document.addEventListener('touchmove', handleTouchMove)
 
 
         return () => {
             // Remove the event listeners
             window.removeEventListener('mouseup', handleMouseUp)
+            window.removeEventListener('touchend', handleTouchEnd)
             window.removeEventListener('resize', handleResize)
             $canvas.removeEventListener('keydown', handleKeyDown)
             $canvas.removeEventListener('keyup', handleKeyUp)
 
             document.removeEventListener('mousemove', handleMouseMove)
+            document.removeEventListener('touchmove', handleTouchMove)
         }
     }, [])
 
     return <canvas id='canvas' 
                 onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
                 onWheel={handleScroll}
 
                 onFocus={handleFocus}

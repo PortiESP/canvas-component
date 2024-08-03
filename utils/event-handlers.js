@@ -3,22 +3,15 @@ import { resetZoom, zoomIn, zoomOut } from "./zoom"
 import { isPanKeysPressed, isPanning, panBy, resetPan, startPanning, stopPanning } from "./pan"
 
 // --- Export all ---
-export { handleMouseMove, handleMouseDown, handleMouseUp, handleScroll, handleKeyDown, handleKeyUp, handleResize, handleBlur, handleFocus }
+export { handleMouseMove, handleMouseDown, handleMouseUp, handleScroll, handleKeyDown, handleKeyUp, handleResize, handleBlur, handleFocus, handleTouchStart, handleTouchMove, handleTouchEnd }
 
 // --- Mouse Events ---
 const handleMouseMove = (e) => {
-    // Calculate the mouse coordinates relative to the canvas
-    const rect = window.cvs.$canvas.getBoundingClientRect()
+    const { x, y } = mapClientToCanvasCoordinates(e.clientX, e.clientY)
 
-    // Position of the mouse relative to the canvas
-    const pointerX = (e.clientX - rect.left)
-    const pointerY = (e.clientY - rect.top)
-    // Compensate the canvas pan
-    const panOffsetX = window.cvs.canvasPanOffset.x
-    const panOffsetY = window.cvs.canvasPanOffset.y
-    // Adjust the pointer coordinates based on the zoom level and the canvas pan
-    window.cvs.x = pointerX / window.cvs.zoom + panOffsetX
-    window.cvs.y = pointerY / window.cvs.zoom + panOffsetY
+    // Set the mouse coordinates on the canvas environment
+    window.cvs.x = x
+    window.cvs.y = y
 
     // Adjust the mouse speed based on the zoom level (this method is used in the callbacks to adjust to read mouse movements)
     e.despX = e.movementX / window.cvs.zoom
@@ -37,7 +30,6 @@ const handleMouseMove = (e) => {
 
 
 const handleMouseDown = (e) => {
-    e.preventDefault()
     window.cvs.$canvas.focus()
 
     const button = e.button
@@ -229,4 +221,63 @@ const handleBlur = (e) => {
 
     // --- Callbacks ---
     if (window.cvs.blurCallback) window.cvs.blurCallback(e)
+}
+
+// ============== Touch Events ==============
+
+const handleTouchStart = (e) => {
+    const touch = e.touches[0]
+
+    const { x, y } = mapClientToCanvasCoordinates(touch.clientX, touch.clientY)
+
+    window.cvs.x = x
+    window.cvs.y = y
+
+    // Fake the button property. The touch event doesn't have a button property but the mouse event does
+    touch.button = 0
+
+    handleMouseDown(touch)
+}
+
+const handleTouchMove = (e) => {
+    const touch = e.touches[0]
+
+    const { x, y } = mapClientToCanvasCoordinates(touch.clientX, touch.clientY)
+
+    // Fake the movementX and movementY properties. Calculate the movement based on the previous touch position
+    touch.movementX = x - window.cvs.x
+    touch.movementY = y - window.cvs.y
+
+    handleMouseMove(touch)
+}
+
+const handleTouchEnd = (e) => {
+    const touch = e.changedTouches[0]
+    // window.cvs.x = null
+    // window.cvs.y = null
+
+    touch.button = 0
+
+    handleMouseUp(touch)
+}
+
+
+// ============== Utils ==============
+
+function mapClientToCanvasCoordinates(clientX, clientY) {
+    // Calculate the mouse coordinates relative to the canvas
+    const rect = window.cvs.$canvas.getBoundingClientRect()
+
+    // Position of the mouse relative to the canvas
+    const pointerX = (clientX - rect.left)
+    const pointerY = (clientY - rect.top)
+    // Compensate the canvas pan
+    const panOffsetX = window.cvs.canvasPanOffset.x
+    const panOffsetY = window.cvs.canvasPanOffset.y
+
+    const x = pointerX / window.cvs.zoom + panOffsetX
+    const y = pointerY / window.cvs.zoom + panOffsetY
+
+    // Adjust the pointer coordinates based on the zoom level and the canvas pan
+    return { x, y }
 }
