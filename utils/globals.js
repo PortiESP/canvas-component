@@ -31,6 +31,8 @@ import { getViewBox, resetZoom } from "./zoom"
  * @property {Object} canvasPanOffset - An object containing the x and y coordinates of the canvas shown at the top-left corner of the canvas
  * @property {Boolean} panning - A boolean flag indicating if the user is panning the canvas
  * @property {Number} zoom - The zoom factor
+ * @property {Boolean} hasBackground - A boolean flag indicating if the canvas has a background color
+ * @property {String} background - The background color of the canvas
  * 
  * **Config**
  * @property {Boolean} autoResize - A boolean flag indicating whether the canvas should automatically resize to fit its parent container

@@ -95,8 +95,14 @@ export function anySpecialKeyPressed(){
 }
 
 
+/**
+ * Get the shortcut of the pressed keys.
+ * 
+ * The shortcut is a string with the keys separated by "+".
+ * 
+ * @returns {String} The shortcut of the pressed keys
+ */
 export function getPressedShortcut(){
-
     let shortcut = []
     if (window.cvs.keysDown["ControlLeft"] || window.cvs.keysDown["ControlRight"]) shortcut.push("control")
     if (window.cvs.keysDown["AltLeft"] || window.cvs.keysDown["Altright"]) shortcut.push("alt")
@@ -110,8 +116,13 @@ export function getPressedShortcut(){
 }
     
 
+/**
+ * Get the key from a key code. This will merge the left and right keys into a single key, for example, "ControlLeft" and "ControlRight" will be converted to "control".
+ * 
+ * @param {String} code The key code to be converted
+ * @returns {String} The key
+ */
 export function getKeyFromCode(code){
-
     switch(code){
         case "ControlLeft" || "ControlRight": return "control"
         case "AltLeft" || "AltRight": return "alt"
@@ -124,13 +135,23 @@ export function getKeyFromCode(code){
 }
 
 
+/**
+ * Handle a shortcut.
+ * 
+ * The shortcuts are a dictionary where the key is the shortcut and the value is the callback function.
+ * 
+ * The callback function will receive the key that was pressed.
+ * 
+ * @param {Object} SHORTCUTS The dictionary of shortcuts
+ * @returns {Boolean} True if a shortcut was handled, false otherwise
+ */
 export function handleShortcut(SHORTCUTS){
-    const key = getPressedShortcut()
-    const shortcutCallback = SHORTCUTS[key]
+    const shortcut = getPressedShortcut()
+    const shortcutCallback = SHORTCUTS[shortcut]
 
     if (shortcutCallback) {
-        if (window.cvs.debug) console.log("Shortcut up key: ", key)
-        shortcutCallback(key)
+        if (window.cvs.debug) console.log("Shortcut up key: ", shortcut)
+        shortcutCallback(shortcut)
         return true
     }
 
