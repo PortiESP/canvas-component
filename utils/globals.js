@@ -97,6 +97,9 @@ export class CanvasGlobals {
         // Resize 
         this.resizeCallback = null
         this.autoResize = false
+        this.hasBackground = false
+        this.background = constants.BACKGROUND_COLOR
+
         // Drawing context
         this.ctx = ctx
         this.$canvas = $canvas
@@ -117,7 +120,14 @@ export class CanvasGlobals {
     clean() {
         const coords = getViewBox()  // Get the coordinates of the view box
         const margin = constants.CLEAN_MARGIN  // Margin to clear the canvas and avoid artifacts
-        this.ctx.clearRect(coords.x - margin, coords.y - margin, coords.width + margin * 2, coords.height + margin * 2)
+
+        if (!this.hasBackground) this.ctx.clearRect(coords.x - margin, coords.y - margin, coords.width + margin * 2, coords.height + margin * 2)
+        else {
+            this.ctx.save()
+            this.ctx.fillStyle = this.background
+            this.ctx.fillRect(coords.x - margin, coords.y - margin, coords.width + margin * 2, coords.height + margin * 2)
+            this.ctx.restore()
+        }   
     }
 
 

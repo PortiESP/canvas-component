@@ -77,6 +77,10 @@ const handleMouseDown = (e) => {
 
 
 const handleMouseUp = (e) => {
+    // Prevent the event to be triggered when the mouse is released over some overlay element
+    // - The `html` allows the mouse up event to be triggered even if the mouse is released outside of the browser
+    // - The `canvas` allows the mouse up event to be triggered even if the mouse is released over the canvas
+    if (e.target.localName !== "html" && e.target.localName !== "canvas") return
 
     const button = e.button
 

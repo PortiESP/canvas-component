@@ -6,4 +6,5 @@ export default {
 
     // --- Graph ---
     CLEAN_MARGIN: 100,
+    BACKGROUND_COLOR: "#eee",
 }
