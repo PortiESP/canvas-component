@@ -35,7 +35,7 @@ export default function Canvas() {
         $canvas.addEventListener('keyup', handleKeyUp)
 
         document.addEventListener('mousemove', handleMouseMove)
-        document.addEventListener('touchmove', handleTouchMove)
+        document.addEventListener('touchmove', handleTouchMove, { passive: false })
 
 
         return () => {

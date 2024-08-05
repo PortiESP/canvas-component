@@ -230,6 +230,7 @@ const handleBlur = (e) => {
 // ============== Touch Events ==============
 
 const handleTouchStart = (e) => {
+    e.preventDefault()
     const touch = e.touches[0]
 
     const { x, y } = mapClientToCanvasCoordinates(touch.clientX, touch.clientY)
@@ -244,6 +245,9 @@ const handleTouchStart = (e) => {
 }
 
 const handleTouchMove = (e) => {
+    
+    if (e.target.localName === "canvas") e.preventDefault()
+
     const touch = e.touches[0]
 
     const { x, y } = mapClientToCanvasCoordinates(touch.clientX, touch.clientY)
