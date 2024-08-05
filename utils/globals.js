@@ -75,39 +75,39 @@ export class CanvasGlobals {
 
         // --- Mouse & Keyboard ---
         // Mouse coordinates in the canvas
-        this.x = 0
-        this.y = 0
+        this._x = 0
+        this._y = 0
         // Mouse state
-        this.mouseDown = null // Button code of the pressed mouse button, if any (null otherwise)
-        this.mouseMoveCallback = null
-        this.mouseUpCallback = null
-        this.mouseDownCallback = null
-        this.mouseScrollCallback = null
-        this.lastMouseDown = 0 // Timestamp of the last mouse down event (used to detect double clicks)
-        this.doubleClick = false // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
-        this.mouseDoubleClickCallback = null
-        this.draggingOrigin = null // Coordinates of the origin of the dragging action
+        this._mouseDown = null // Button code of the pressed mouse button, if any (null otherwise)
+        this._mouseMoveCallback = null
+        this._mouseUpCallback = null
+        this._mouseDownCallback = null
+        this._mouseScrollCallback = null
+        this._lastMouseDown = 0 // Timestamp of the last mouse down event (used to detect double clicks)
+        this._doubleClick = false // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
+        this._mouseDoubleClickCallback = null
+        this._draggingOrigin = null // Coordinates of the origin of the dragging action
         // Keyboard state
-        this.key = null // The key code of the last pressed key, if any (null otherwise)
-        this.keysDown = {} // Object to store the state of the keys (true if the key is pressed, false or undefined otherwise)
-        this.keyDownCallback = null
-        this.keyUpCallback = null
+        this._key = null // The key code of the last pressed key, if any (null otherwise)
+        this._keysDown = {} // Object to store the state of the keys (true if the key is pressed, false or undefined otherwise)
+        this._keyDownCallback = null
+        this._keyUpCallback = null
 
         // --- Canvas ---
         // Resize 
-        this.resizeCallback = null
-        this.autoResize = false
-        this.hasBackground = false
-        this.background = constants.BACKGROUND_COLOR
+        this._resizeCallback = null
+        this._autoResize = false
+        this._hasBackground = false
+        this._background = constants.BACKGROUND_COLOR
 
         // Drawing context
-        this.ctx = ctx
-        this.$canvas = $canvas
+        this._ctx = ctx
+        this._$canvas = $canvas
 
         // --- Pan & Zoom ---
         // Pan the canvas
-        this.canvasPanOffset = { x: 0, y: 0 } // Coordinates of the canvas show at the top-left corner of the canvas
-        this.panning = false // Flag to indicate if the user is panning the canvas
+        this._canvasPanOffset = { x: 0, y: 0 } // Coordinates of the canvas show at the top-left corner of the canvas
+        this._panning = false // Flag to indicate if the user is panning the canvas
         // Zoom
         this._zoom = 1 // Zoom factor
 
@@ -129,9 +129,6 @@ export class CanvasGlobals {
             this.ctx.restore()
         }   
     }
-
-
-    
 
 
     /**
@@ -226,10 +223,77 @@ export class CanvasGlobals {
 
 
     // --- Getters & Setters ---
-    get zoom() {
-        return this._zoom
-    }
 
+    get x() { return this._x; }
+    set x(value) { this._x = value; }
+
+    get y() { return this._y; }
+    set y(value) { this._y = value; }
+
+    get mouseDown() { return this._mouseDown; }
+    set mouseDown(value) { this._mouseDown = value; }
+
+    get mouseMoveCallback() { return this._mouseMoveCallback; }
+    set mouseMoveCallback(value) { this._mouseMoveCallback = value; }
+
+    get mouseUpCallback() { return this._mouseUpCallback; }
+    set mouseUpCallback(value) { this._mouseUpCallback = value; }
+
+    get mouseDownCallback() { return this._mouseDownCallback; }
+    set mouseDownCallback(value) { this._mouseDownCallback = value; }
+
+    get mouseScrollCallback() { return this._mouseScrollCallback; }
+    set mouseScrollCallback(value) { this._mouseScrollCallback = value; }
+
+    get lastMouseDown() { return this._lastMouseDown; }
+    set lastMouseDown(value) { this._lastMouseDown = value; }
+
+    get doubleClick() { return this._doubleClick; }
+    set doubleClick(value) { this._doubleClick = value; }
+
+    get mouseDoubleClickCallback() { return this._mouseDoubleClickCallback; }
+    set mouseDoubleClickCallback(value) { this._mouseDoubleClickCallback = value; }
+
+    get draggingOrigin() { return this._draggingOrigin; }
+    set draggingOrigin(value) { this._draggingOrigin = value; }
+
+    get key() { return this._key; }
+    set key(value) { this._key = value; }
+
+    get keysDown() { return this._keysDown; }
+    set keysDown(value) { this._keysDown = value; }
+
+    get keyDownCallback() { return this._keyDownCallback; }
+    set keyDownCallback(value) { this._keyDownCallback = value; }
+
+    get keyUpCallback() { return this._keyUpCallback; }
+    set keyUpCallback(value) { this._keyUpCallback = value; }
+
+    get resizeCallback() { return this._resizeCallback; }
+    set resizeCallback(value) { this._resizeCallback = value; }
+
+    get autoResize() { return this._autoResize; }
+    set autoResize(value) { this._autoResize = value; }
+
+    get hasBackground() { return this._hasBackground; }
+    set hasBackground(value) { this._hasBackground = value; }
+
+    get background() { return this._background; }
+    set background(value) { this._background = value; }
+
+    get ctx() { return this._ctx; }
+    set ctx(value) { this._ctx = value; }
+
+    get $canvas() { return this._$canvas; }
+    set $canvas(value) { this._$canvas = value; }
+
+    get canvasPanOffset() { return this._canvasPanOffset; }
+    set canvasPanOffset(value) { this._canvasPanOffset = value; }
+
+    get panning() { return this._panning; }
+    set panning(value) { this._panning = value; }
+
+    get zoom() { return this._zoom }
     set zoom(value) {
         this._zoom = value
         window.ui.call("setZoomLabel", value)
