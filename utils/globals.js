@@ -24,6 +24,8 @@ import { getViewBox, resetZoom } from "./zoom"
  * @property {Object} draggingOrigin - The coordinates of the mouse at the moment the dragging action started
  * @property {Number} key - The key code of the pressed key, if any (null otherwise)
  * @property {Object} keysDown - An object to store the state of the keys
+ * @property {Array} touches - An array to store the touch events (mobile)
+ * @property {Object} touchesData - An object to store information about the touch events (used to calculate the distance between touches for the zoom effect, etc.)
  * 
  * **Canvas**
  * @property {Object} ctx - The canvas 2D context
@@ -89,6 +91,8 @@ export class CanvasGlobals {
         this._doubleClick = false // Flag to indicate if a double click event was detected (set to true when a double click is detected by a mouse down event, and reset to false on the next mouse up event)
         this._mouseDoubleClickCallback = null
         this._draggingOrigin = null // Coordinates of the origin of the dragging action
+        this.touches = [] // Array to store the touch events (mobile)
+        this.touchesData = {} // Object to store the touch data
         // Keyboard state
         this._key = null // The key code of the last pressed key, if any (null otherwise)
         this._keysDown = {} // Object to store the state of the keys (true if the key is pressed, false or undefined otherwise)
@@ -153,13 +157,14 @@ export class CanvasGlobals {
         data = [
             // Default Debug info
             `(${this.x.toFixed(2)})  - (${this.y.toFixed(2)})`,
-            "Zoom: " + this.zoom,
+            "Zoom: " + this.zoom.toFixed(3),
             "Mouse down: " + this.mouseDown,
             "Dragging origin: " + (this.draggingOrigin ? `(${this.draggingOrigin.x.toFixed(2)}) - (${this.draggingOrigin.y.toFixed(2)})` : "None"),
             "Key: " + this.key,
             "Keys down: " + Object.keys(this.keysDown).filter(k => this.keysDown[k]).join('+') || "None",
             "Double click ready: " + (Date.now() - this.lastMouseDown < constants.DOUBLE_CLICK_DELAY ? 'Yes' : 'No'),
             "Canvas pan offset: (" + this.canvasPanOffset.x.toFixed(2) + ") - (" + this.canvasPanOffset.y.toFixed(2) + ")",
+            `Touch zoom: ${this.touchesData.zoomEnabled ? "Yes": "No"}`,
 
             // Additional debug info
             ...data
@@ -217,7 +222,15 @@ export class CanvasGlobals {
         // Call the debug functions
         for (let f in this.debugFunctions) this.debugFunctions[f]()
         this.debugFunctions = {}	
-        
+
+        // Touches
+        this.touches.forEach((touch, i) => {
+            this.ctx.fillStyle = "#f008"
+            this.ctx.beginPath()
+            this.ctx.arc(touch.x, touch.y, 25, 0, 2 * Math.PI)
+            this.ctx.fillText(touch.id, touch.x+3, touch.y+40)
+            this.ctx.fill()
+        })
 
         // Reset the style
         this.ctx.restore()

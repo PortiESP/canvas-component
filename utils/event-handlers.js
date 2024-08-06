@@ -1,6 +1,6 @@
 import constants from "./constants"
-import { resetZoom, zoomIn, zoomOut } from "./zoom"
-import { isPanKeysPressed, isPanning, panBy, resetPan, startPanning, stopPanning } from "./pan"
+import { resetZoom, zoomBy, zoomIn, zoomOut, zoomTo } from "./zoom"
+import { isPanKeysPressed, isPanning, panBy, panTo, resetPan, startPanning, stopPanning } from "./pan"
 
 // --- Export all ---
 export { handleMouseMove, handleMouseDown, handleMouseUp, handleScroll, handleKeyDown, handleKeyUp, handleResize, handleBlur, handleFocus, handleTouchStart, handleTouchMove, handleTouchEnd }
@@ -240,31 +240,82 @@ const handleTouchStart = (e) => {
 
     // Fake the button property. The touch event doesn't have a button property but the mouse event does
     touch.button = 0
+    console.log(e)
+
+    saveTouches(Object.values(e.touches), {start: true})
+    window.cvs.touchesData = {
+        zoomEnabled: e.touches.length === 2,
+        touchA: e.touches[0],
+        touchB: null,
+        distance: null,
+        originalZoom: window.cvs.zoom,
+        originalX: x,
+        originalY: y
+    }
+
+    if (window.cvs.touchesData.zoomEnabled) {
+        const tA = e.touches[0]
+        const tB = e.touches[1]
+        const distance = Math.hypot(tA.clientX - tB.clientX, tA.clientY - tB.clientY)
+        window.cvs.touchesData.distance = distance
+        window.cvs.touchesData.touchB = tB
+        const { x: xB, y: yB } = mapClientToCanvasCoordinates(tB.clientX, tB.clientY)
+        const center = {x: (x+xB)/2, y: (y+yB)/2}
+        window.cvs.touchesData.originalX = center.x
+        window.cvs.touchesData.originalY = center.y
+    }
 
     handleMouseDown(touch)
 }
 
 const handleTouchMove = (e) => {
     
-    if (e.target.localName === "canvas") e.preventDefault()
+    if (e.target.localName === "canvas") e.preventDefault()  // Avoid the page to be moved/scrolled on mobile devices when the user drags the canvas
 
     const touch = e.touches[0]
 
     const { x, y } = mapClientToCanvasCoordinates(touch.clientX, touch.clientY)
 
     // Fake the movementX and movementY properties. Calculate the movement based on the previous touch position
-    touch.movementX = x - window.cvs.x
-    touch.movementY = y - window.cvs.y
+    touch.movementX = (x - window.cvs.x)/window.cvs.zoom
+    touch.movementY = (y - window.cvs.y)/window.cvs.zoom
 
-    handleMouseMove(touch)
+    // After the fake movementX and movementY properties are calculated, update the mouse coordinates
+    window.cvs.x = x
+    window.cvs.y = y
+
+    saveTouches(Object.values(e.touches))
+    if (window.cvs.touchesData.zoomEnabled) {
+        const tA = e.touches[0]
+        const tB = e.touches[1]
+        const distance = Math.hypot(tA.clientX - tB.clientX, tA.clientY - tB.clientY)
+        let delta = distance/window.cvs.touchesData.distance
+        window.cvs.touchesData.delta = delta
+
+        zoomTo(window.cvs.touchesData.originalZoom*delta)
+        const { x: xB, y: yB } = mapClientToCanvasCoordinates(tB.clientX, tB.clientY)
+        const center = {x: (x+xB)/2, y: (y+yB)/2}
+        console.log(`calcs: ${center.x-window.cvs.touchesData.originalX}, ${center.y-window.cvs.touchesData.originalY}`)
+        panBy(center.x-window.cvs.touchesData.originalX, center.y-window.cvs.touchesData.originalY)
+    } else {
+        handleMouseMove(touch)
+    }
 }
 
 const handleTouchEnd = (e) => {
     const touch = e.changedTouches[0]
-    // window.cvs.x = null
-    // window.cvs.y = null
 
     touch.button = 0
+
+    saveTouches(Object.values(e.touches), {end: true})
+
+    window.cvs.touchesData = {
+        zoomEnabled: false,
+        touchA: null,
+        touchB: null,
+        distance: null,
+        delta: 0
+    }
 
     handleMouseUp(touch)
 }
@@ -288,4 +339,13 @@ function mapClientToCanvasCoordinates(clientX, clientY) {
 
     // Adjust the pointer coordinates based on the zoom level and the canvas pan
     return { x, y }
+}
+
+
+function saveTouches(touches, additionalData = {}) {
+    console.log("*", touches)
+    window.cvs.touches = touches.map(t => {
+        console.log()
+        return { id: t.identifier, ...mapClientToCanvasCoordinates(t.clientX, t.clientY), ...additionalData }
+    })
 }

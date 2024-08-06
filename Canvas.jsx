@@ -27,6 +27,8 @@ export default function Canvas() {
         $canvas.style.outline = 'none'
         $canvas.focus()
 
+        handleResize()  // Set the initial canvas size
+
         // Add the event listeners
         window.addEventListener('mouseup', handleMouseUp)
         window.addEventListener('touchend', handleTouchEnd)

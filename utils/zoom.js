@@ -105,7 +105,38 @@ export function zoomAtMouse(zoomIn){
         const userY = 0.5*height/10
         panBy(userX, userY)
     }
+}
 
+/**
+ * Zooms in or out at the current mouse position
+ * 
+ * @param {Boolean} zoomIn - Whether to zoom in or out. If true, zooms in, otherwise zooms out.
+ */
+export function zoomToAtMouse(zoomIn){
+    // Determine the zoom factor
+    const zoomFactor = zoomIn
+
+    const {x, y, x2, y2} = getViewBox()
+    const userXRatio = (window.cvs.x - x)/(x2-x)
+    const userYRatio = (window.cvs.y - y)/(y2-y)
+
+    // Zoom the canvas
+    zoomTo(zoomFactor)
+
+    // Pan towards the mouse position
+    if (zoomIn > 1){
+        const {width, height} = getViewBox()
+        const userX = userXRatio*width/10
+        const userY = userYRatio*height/10
+        panBy(-userX, -userY)
+    }
+    // Pan towards the center of the canvas
+    else if (zoomIn < 1){
+        const {width, height} = getViewBox()
+        const userX = 0.5*width/10
+        const userY = 0.5*height/10
+        panBy(userX, userY)
+    }
 }
 
 
@@ -157,4 +188,53 @@ export function zoomCenterBy(zoomFactor){
     const dw = (newWidth - width)/2
     const dh = (newHeight - height)/2
     panBy(dw, dh)
+}
+
+/**
+ * Zooms at the center of the canvas.
+ */
+export function zoomCenterTo(zoomFactor){
+   
+    const {width, height} = getViewBox()
+    zoomTo(zoomFactor)
+    const {width: newWidth, height: newHeight} = getViewBox()
+
+    const dw = (newWidth - width)/2
+    const dh = (newHeight - height)/2
+    panTo(dw, dh)
+}
+
+
+
+/**
+ * Zooms in or out at the current mouse position
+ * 
+ * @param {Boolean} zoom - Whether to zoom in or out. If true, zooms in, otherwise zooms out.
+ */
+export function zoomByAtPos(zoom, toX, toY){
+    // Determine the zoom factor
+    const zoomFactor = zoom
+
+    const {x, y, x2, y2} = getViewBox()
+    const userXRatio = (toX - x)/(x2-x)
+    const userYRatio = (toY - y)/(y2-y)
+
+    // Zoom the canvas
+    zoomBy(zoomFactor)
+
+    // Pan towards the mouse position
+    if (zoom){
+        const {width, height} = getViewBox()
+        const userX = userXRatio*width/10
+        const userY = userYRatio*height/10
+        panBy(-userX, -userY)
+    }
+    // Pan towards the center of the canvas
+    else {
+        const {width, height} = getViewBox()
+        const userX = 0.5*width/10
+        const userY = 0.5*height/10
+        panBy(userX, userY)
+    }
+
 }
