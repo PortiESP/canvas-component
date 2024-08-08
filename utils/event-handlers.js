@@ -190,8 +190,11 @@ const handleResize = (e) => {
         resetZoom() // Reset the zoom level
         const $canvas = window.cvs.$canvas
         const parent = $canvas.parentElement.getBoundingClientRect()
-        $canvas.width = parent.width
-        $canvas.height = parent.height
+        const dpr = window.devicePixelRatio || 1;
+        
+        // Set the canvas width and height according to the device pixel ratio
+        $canvas.width = parent.width * dpr
+        $canvas.height = parent.height * dpr
     }
 
     // --- Callbacks ---
