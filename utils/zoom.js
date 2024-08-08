@@ -67,6 +67,8 @@ export function getViewBox(){
     return {
         x,
         y,
+        x1: x,
+        y1: y,
         width: width/window.cvs.zoom,
         height: height/window.cvs.zoom,
         x2: x + width/window.cvs.zoom,
@@ -194,14 +196,7 @@ export function zoomCenterBy(zoomFactor){
  * Zooms at the center of the canvas.
  */
 export function zoomCenterTo(zoomFactor){
-   
-    const {width, height} = getViewBox()
-    zoomTo(zoomFactor)
-    const {width: newWidth, height: newHeight} = getViewBox()
-
-    const dw = (newWidth - width)/2
-    const dh = (newHeight - height)/2
-    panTo(dw, dh)
+    zoomCenterBy(1/window.cvs.zoom*zoomFactor)
 }
 
 
