@@ -14,57 +14,55 @@ import { handleBlur, handleFocus, handleKeyDown, handleKeyUp, handleMouseDown, h
  */
 export default function Canvas() {
 
-    // ================================ Assign the events to the canvas HTML element ================================
 
-    // The following event listeners weren't added using JSX because the canvas element didn't allow to define the event listeners in the JSX code, 
-    // So it was necessary to add the event listeners in the useLayoutEffect hook.
-    useLayoutEffect(() => {
-        const $canvas = window.cvs?.$canvas
-        if (!$canvas) return
+    return <canvas id='canvas'
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+        onWheel={handleScroll}
 
-        $canvas.tabIndex = 1000
-        $canvas.autofocus = true
-        $canvas.style.outline = 'none'
-        $canvas.focus()
+        onFocus={handleFocus}
+        onBlur={handleBlur}
 
-        handleResize()  // Set the initial canvas size
+        onContextMenu={(e) => e.preventDefault()}  // Disable the browser context menu
 
-        // Add the event listeners
-        window.addEventListener('mouseup', handleMouseUp)
-        window.addEventListener('touchend', handleTouchEnd)
-        window.addEventListener('resize', handleResize)
-        $canvas.addEventListener('keydown', handleKeyDown)
-        $canvas.addEventListener('keyup', handleKeyUp)
-
-        document.addEventListener('mousemove', handleMouseMove)
-        document.addEventListener('touchmove', handleTouchMove, { passive: false })
+        // Required to make the canvas to receive keyboard events
+        tabIndex={0}
+        autoFocus
+    />
+}
 
 
-        return () => {
-            // Remove the event listeners
-            window.removeEventListener('mouseup', handleMouseUp)
-            window.removeEventListener('touchend', handleTouchEnd)
-            window.removeEventListener('resize', handleResize)
-            $canvas.removeEventListener('keydown', handleKeyDown)
-            $canvas.removeEventListener('keyup', handleKeyUp)
+// The following event listeners weren't added using JSX because the canvas element didn't allow to define the event listeners in the JSX code, 
+// So it was necessary to add the event listeners in the useLayoutEffect hook.
+export function setupAfterCanvas() {
+    const $canvas = document.getElementById('canvas')
+    $canvas.tabIndex = 1000
+    $canvas.autofocus = true
+    $canvas.style.outline = 'none'
+    $canvas.focus()
 
-            document.removeEventListener('mousemove', handleMouseMove)
-            document.removeEventListener('touchmove', handleTouchMove)
-        }
-    }, [])
+    handleResize()  // Set the initial canvas size
 
-    return <canvas id='canvas' 
-                onMouseDown={handleMouseDown}
-                onTouchStart={handleTouchStart}
-                onWheel={handleScroll}
+    // Add the event listeners
+    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('touchend', handleTouchEnd)
+    window.addEventListener('resize', handleResize)
+    $canvas.addEventListener('keydown', handleKeyDown)
+    $canvas.addEventListener('keyup', handleKeyUp)
 
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('touchmove', handleTouchMove, { passive: false })
 
-                onContextMenu={(e) => e.preventDefault()}  // Disable the browser context menu
 
-                // Required to make the canvas to receive keyboard events
-                tabIndex={0}  
-                autoFocus 
-            />
+    return () => {
+        // Remove the event listeners
+        window.removeEventListener('mouseup', handleMouseUp)
+        window.removeEventListener('touchend', handleTouchEnd)
+        window.removeEventListener('resize', handleResize)
+        $canvas.removeEventListener('keydown', handleKeyDown)
+        $canvas.removeEventListener('keyup', handleKeyUp)
+
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('touchmove', handleTouchMove)
+    }
 }
