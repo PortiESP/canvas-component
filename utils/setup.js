@@ -33,7 +33,7 @@ export function setupCanvas(debug = false) {
 // So it was necessary to add the event listeners in the useLayoutEffect hook.
 function setupAfterCanvas() {
     const $canvas = document.getElementById('canvas')
-    $canvas.tabIndex = 1000
+    // $canvas.tabIndex = 1000
     $canvas.autofocus = true
     $canvas.style.outline = 'none'
     $canvas.focus()
